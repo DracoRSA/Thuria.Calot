@@ -127,22 +127,44 @@ namespace Thuria.Calot.TestUtilities
       return string.Join(string.Empty, chars.Select(c => c.ToString()).ToArray());
     }
 
-    private static bool CreateRandomBoolean()
+    /// <summary>
+    /// Create Random boolean value
+    /// </summary>
+    /// <returns>Random boolean value</returns>
+    public static bool CreateRandomBoolean()
     {
       return CreateRandomInt(1, 100) < 50;
     }
 
-    private static uint CreateRandomUInt(uint minimumValue = uint.MinValue, uint maximumValue = uint.MaxValue)
+    /// <summary>
+    /// Create Random uint
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random uint value</returns>
+    public static uint CreateRandomUInt(uint minimumValue = uint.MinValue, uint maximumValue = uint.MaxValue)
     {
       return (uint)CreateRandomLong(minimumValue, maximumValue);
     }
 
+    /// <summary>
+    /// Create Random Int
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random int value</returns>
     private static int CreateRandomInt(int minimumValue = int.MinValue, int maximumValue = int.MaxValue)
     {
       return (int)CreateRandomLong(minimumValue, maximumValue);
     }
 
-    private static long CreateRandomLong(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
+    /// <summary>
+    /// Create Random Long
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random long value</returns>
+    public static long CreateRandomLong(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
     {
       var randomNumber = CreateRandomNumber(minimumValue, maximumValue);
       var range        = maximumValue - minimumValue + 1;
@@ -150,7 +172,13 @@ namespace Thuria.Calot.TestUtilities
       return minimumValue + (range * randomNumber);
     }
 
-    private static double CreateRandomDouble(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
+    /// <summary>
+    /// Create Random Double
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random double value</returns>
+    public static double CreateRandomDouble(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
     {
       double randomNumber = CreateRandomNumber(minimumValue, maximumValue);
       double range        = maximumValue - minimumValue + 1;
@@ -158,7 +186,12 @@ namespace Thuria.Calot.TestUtilities
       return (double)(minimumValue + (range * randomNumber));
     }
 
-    private static object CreateRandomEnum(Type enumType)
+    /// <summary>
+    /// Create Random Enum of Type
+    /// </summary>
+    /// <param name="enumType">Enum Type</param>
+    /// <returns>Random enum value</returns>
+    public static object CreateRandomEnum(Type enumType)
     {
       if (!enumType.IsEnum)
       {
@@ -169,6 +202,12 @@ namespace Thuria.Calot.TestUtilities
       return CreateRandomFrom(possible);
     }
 
+    /// <summary>
+    /// Return Random item from supplied collection
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="items"></param>
+    /// <returns></returns>
     private static T CreateRandomFrom<T>(IEnumerable<T> items)
     {
       var itemArray = items as T[] ?? items.ToArray();
@@ -176,7 +215,14 @@ namespace Thuria.Calot.TestUtilities
       return itemArray.Skip(CreateRandomInt(0, maxValue)).First();
     }
 
-    private static object CreateRandomCollection(Type genericCollectionType, int minItems = MinimumCollectionItems, int maxItems = MaximumCollectionItems)
+    /// <summary>
+    /// Create Collection of Random values
+    /// </summary>
+    /// <param name="genericCollectionType">Collection Type</param>
+    /// <param name="minItems">Minimum number of items (Optional)</param>
+    /// <param name="maxItems">Maximum number of items (Optional)</param>
+    /// <returns>A Collection of Random values of the specified type</returns>
+    public static object CreateRandomCollection(Type genericCollectionType, int minItems = MinimumCollectionItems, int maxItems = MaximumCollectionItems)
     {
       var listType         = typeof(List<>).MakeGenericType(new[] { genericCollectionType });
       var randomCollection = (IList)Activator.CreateInstance(listType);
@@ -190,19 +236,42 @@ namespace Thuria.Calot.TestUtilities
       return randomCollection;
     }
 
-    private static IDictionary<dynamic, dynamic> CreateRandomDictionary()
+    /// <summary>
+    /// Create Random Dictionary
+    /// </summary>
+    /// <returns>A Random Dictionary</returns>
+    public static IDictionary<dynamic, dynamic> CreateRandomDictionary()
     {
       return null;
     }
 
-    private static DateTime CreateRandomDate(DateTime? minDate = null, DateTime? maxDate = null, bool dateOnly = false,
-                                             DateTime? minTime = null, DateTime? maxTime = null)
+    /// <summary>
+    /// Create Random Date
+    /// </summary>
+    /// <param name="minDate">Minimum Date (Optional)</param>
+    /// <param name="maxDate">Maximum Date (Optional)</param>
+    /// <param name="dateOnly">Date Only and not Time</param>
+    /// <param name="minTime">Minimum Time (Optional)</param>
+    /// <param name="maxTime">Maximum Time (Optional)</param>
+    /// <returns>Random created date</returns>
+    public static DateTime CreateRandomDate(DateTime? minDate = null, DateTime? maxDate = null, bool dateOnly = false,
+                                            DateTime? minTime = null, DateTime? maxTime = null)
     {
       return CreateRandomDate(DateTimeKind.Local, minDate, maxDate, dateOnly, minTime, maxTime);
     }
 
-    private static DateTime CreateRandomDate(DateTimeKind kind, DateTime? minDate = null, DateTime? maxDate = null, bool dateOnly = false,
-                                             DateTime? minTime = null, DateTime? maxTime = null)
+    /// <summary>
+    /// Create Random Date
+    /// </summary>
+    /// <param name="dateKind">Kind of Date</param>
+    /// <param name="minDate">Minimum Date (Optional)</param>
+    /// <param name="maxDate">Maximum Date (Optional)</param>
+    /// <param name="dateOnly">Date Only and not Time</param>
+    /// <param name="minTime">Minimum Time (Optional)</param>
+    /// <param name="maxTime">Maximum Time (Optional)</param>
+    /// <returns>Random created date</returns>
+    public static DateTime CreateRandomDate(DateTimeKind dateKind, DateTime? minDate = null, DateTime? maxDate = null, bool dateOnly = false,
+                                            DateTime? minTime = null, DateTime? maxTime = null)
     {
       if (dateOnly)
       {
@@ -218,7 +287,7 @@ namespace Thuria.Calot.TestUtilities
       var rawDateTime = new DateTime((long) actualTicks);
       var sanitised   = new DateTime(rawDateTime.Year, rawDateTime.Month, rawDateTime.Day,
                                      rawDateTime.Hour, rawDateTime.Minute, rawDateTime.Second, rawDateTime.Millisecond,
-                                     kind);
+                                     dateKind);
 
       return RangeCheckTimeOnRandomDate(minTime, maxTime, dateOnly ? sanitised.StartOfDay() : sanitised);
     }
