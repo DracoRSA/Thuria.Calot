@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Johan Dercksen</Authors>
+    <Company>Draco</Company>
+    <Product>Thuria</Product>
+    <PackageProjectUrl>https://github.com/DracoRSA/Thuria.Calot</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/DracoRSA/Thuria.Calot</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/DracoRSA/Thuria.Calot/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>Thuria NUnit TestUtilities</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Draco\Thuria.Calot\src\Thuria.Calot.TestUtilities\Thuria.Calot.TestUtilities.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
