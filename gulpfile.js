@@ -14,11 +14,14 @@ let buildSettings     = { };
 
 gulp.task('load-settings', function(done) {
     console.log(clc.blueBright('Loading Build Settings'));
+    nugetSettings = yaml.load('../nugetSettings.yml');
     buildSettings = yaml.load('./.buildSettings.yml');
+    
+    console.log('Version       :', buildSettings.VERSION);
+    console.log('Configuration :', buildSettings.CONFIGURATION);
+    console.log('Build Dir     :', buildDir);
 
-    console.log('Version      :', buildSettings.VERSION);
-    console.log('Configuration:', buildSettings.CONFIGURATION);
-    console.log('Build Dir    :', buildDir);
+    console.log('Nuget Settings:', nugetSettings);
 
     done();
 });
@@ -158,7 +161,7 @@ gulp.task('nuget-publish', gulp.series('nuget-pack', (done) => {
 
     return gulp.src(nugetDir + '/*.nupkg', { read: false })
         .pipe(push({
-            apiKey: buildSettings.NUGETAPIKEY, 
+            apiKey: nugetSettings.NUGETAPIKEY, 
             source: 'https://api.nuget.org/v3/index.json'
         }))
         .on('error', function(err) {
