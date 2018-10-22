@@ -98,23 +98,23 @@
             </summary>
             <param name="minimumValue">Minimum Value</param>
             <param name="maximumValue">Maximum Number</param>
-            <returns></returns>
+            <returns>Random long</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomValue(System.Type)">
             <summary>
             Create a Random Value of Type 
             </summary>
             <param name="objectType"></param>
-            <returns></returns>
+            <returns>Random value of Type</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomString(System.Int32,System.Nullable{System.Int32},System.String)">
             <summary>
             Create Random String
             </summary>
-            <param name="minLength"></param>
-            <param name="maxLength"></param>
-            <param name="charSet"></param>
-            <returns></returns>
+            <param name="minLength">Minimum length of the string</param>
+            <param name="maxLength">Maximum length of the string</param>
+            <param name="charSet">Character Set to be used in the string (Optional)</param>
+            <returns>Random string</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomBoolean">
             <summary>
@@ -225,6 +225,26 @@
             </summary>
             <param name="propertyInfo"></param>
             <returns></returns>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.TestExtensions.CreateSubstitute(System.Type)">
+            <summary>
+            Create a NSubstitute Mocked object
+            </summary>
+            <param name="objectType">Object Type</param>
+            <returns>NSubstitute Mocked object</returns>
+        </member>
+        <member name="T:Thuria.Calot.TestUtilities.TestHelper">
+            <summary>
+            General Test Helper methods
+            </summary>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.TestHelper.CreateParameterValues(System.Collections.Generic.IEnumerable{System.Reflection.ParameterInfo},System.String)">
+            <summary>
+            Create Random Parameter Values
+            </summary>
+            <param name="allParameters">List of Parameters</param>
+            <param name="nullParameterName">Parameter that should be null</param>
+            <returns>List of random generated parameter values</returns>
         </member>
     </members>
 </doc>

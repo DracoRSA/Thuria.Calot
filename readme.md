@@ -117,3 +117,13 @@ Other functionality:
  
 * **CreateRandomFrom\<T>** - Select random value from a collection of values
 * **CreateRandomCollection** - Create a collection of random values
+
+---
+TestHelper
+---
+
+The Test Helper contains generic test helper methods that can be used in tests.
+
+* **CreateParameterValues** - Generate random values for a list of parameters
+
+---

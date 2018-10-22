@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using NSubstitute;
 
 namespace Thuria.Calot.TestUtilities
 {
@@ -25,6 +28,25 @@ namespace Thuria.Calot.TestUtilities
     public static object CreateRandomValue(this PropertyInfo propertyInfo)
     {
       return RandomValueGenerator.CreateRandomValue(propertyInfo.PropertyType);
+    }
+
+    /// <summary>
+    /// Create a NSubstitute Mocked object
+    /// </summary>
+    /// <param name="objectType">Object Type</param>
+    /// <returns>NSubstitute Mocked object</returns>
+    public static object CreateSubstitute(this Type objectType)
+    {
+      var constructorInfo       = objectType.GetConstructors().OrderBy(info => info.GetParameters().Length).FirstOrDefault();
+      var constructorParameters = constructorInfo?.GetParameters();
+
+      if (constructorInfo == null || !constructorParameters.Any())
+      {
+        return Substitute.For(new[] { objectType }, new object[0]);
+      }
+
+      var parameterValues = TestHelper.CreateParameterValues(constructorParameters);
+      return Substitute.For(new[] { objectType }, parameterValues.ToArray());
     }
   }
 }

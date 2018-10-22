@@ -39,7 +39,7 @@ namespace Thuria.Calot.TestUtilities
     /// </summary>
     /// <param name="minimumValue">Minimum Value</param>
     /// <param name="maximumValue">Maximum Number</param>
-    /// <returns></returns>
+    /// <returns>Random long</returns>
     public static long CreateRandomNumber(long minimumValue = MinimumNumber, long maximumValue = MaximumNumber)
     {
       var randomNextValue = (long)RandomValue.NextDouble();
@@ -52,7 +52,7 @@ namespace Thuria.Calot.TestUtilities
     /// Create a Random Value of Type 
     /// </summary>
     /// <param name="objectType"></param>
-    /// <returns></returns>
+    /// <returns>Random value of Type</returns>
     public static object CreateRandomValue(Type objectType)
     {
       if (objectType == typeof(Type)) { return objectType; }
@@ -94,17 +94,17 @@ namespace Thuria.Calot.TestUtilities
         throw new Exception($"Random Value Generator for {objectType.Name} does not exist");
       }
 
-      var mockedObject = randomType.MockAs();
-      return mockedObject.Object;
+      var mockedObject = randomType.CreateSubstitute();
+      return mockedObject;
     }
 
     /// <summary>
     /// Create Random String
     /// </summary>
-    /// <param name="minLength"></param>
-    /// <param name="maxLength"></param>
-    /// <param name="charSet"></param>
-    /// <returns></returns>
+    /// <param name="minLength">Minimum length of the string</param>
+    /// <param name="maxLength">Maximum length of the string</param>
+    /// <param name="charSet">Character Set to be used in the string (Optional)</param>
+    /// <returns>Random string</returns>
     public static string CreateRandomString(int minLength = MinimumLengthString, int? maxLength = null, string charSet = null)
     {
       var actualMaxLength = maxLength ?? minLength + MinimumLengthString;
