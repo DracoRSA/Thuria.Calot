@@ -4,6 +4,9 @@ let filter = require('gulp-filter');
 let path = require('path');
 let yaml = require('yamljs');
 let del = require('gulp-clean');
+let argv = require('yargs').argv;
+let stream = require('stream');
+let exec = require('child_process').exec;
 
 let {clean, restore, build, test, pack, publish, push, run} = require('gulp-dotnet-cli');
 
@@ -11,17 +14,65 @@ let buildDir          = process.cwd();
 let nugetDir          = path.join(buildDir, '/buildoutput/nuget');
 let nugetPublishedDir = path.join(buildDir, '/buildoutput/nugetPublished');
 let buildSettings     = { };
+let nugetSettings     = { };
+
+// Example Usage: 
+// npm run nugetPack -- --package=Thark.Core
+// npm run nugetPublish -- --package=Thark.Core
+
+let packNugetPackage = async (currentNugetPackage) => {
+    console.log(clc.blueBright('Creating Nuget Package:' + currentNugetPackage.Name));
+
+    let packageLocation = currentNugetPackage.Location + '/Thuria.' + currentNugetPackage.Name + '.csproj';
+    let packageVersion = currentNugetPackage.Version + (currentNugetPackage.IsBeta ? '-beta' : '');
+    let packConfiguration = {
+        configuration: buildSettings.CONFIGURATION,
+        version: packageVersion,
+        noBuild: true,
+        includeSymbols: false,
+        output: path.join(buildDir, '/buildoutput/nuget'),
+        runtime: 'netstandard2.0'
+    };
+
+    return new Promise((resolve, reject) => {
+        let processCommand = 'dotnet pack ';
+        let processArgs = packageLocation +
+                          ' --output ' + packConfiguration.output +
+                          ' --no-build --no-restore --configuration ' + packConfiguration.configuration +
+                          ` /p:Version=${packConfiguration.version}`;
+
+        var childProcess = exec(processCommand + processArgs, {maxBuffer: 500 *1024 }, function(err, stdout, stderr) {
+            if (err) {
+                console.log(clc.red.bold('Error during NuGet Packing of ' + currentNugetPackage.Name, err));
+                reject(error);
+            } else {
+                console.log(clc.blueBright('Successfully created Nuget Package:' + currentNugetPackage.Name));
+                resolve();
+            }        
+        });
+
+        childProcess.stdout.on('data', function(data) {
+            console.log(data);
+         });
+         childProcess.stderr.on('data', function(data) {
+            console.log(data);
+         });
+     });
+};
 
 gulp.task('load-settings', function(done) {
     console.log(clc.blueBright('Loading Build Settings'));
+
     nugetSettings = yaml.load('../nugetSettings.yml');
     buildSettings = yaml.load('./.buildSettings.yml');
-    
+    buildSettings.nugetPackage = (argv.package === undefined) ? 'All' : argv.package;
+
     console.log('Version       :', buildSettings.VERSION);
     console.log('Configuration :', buildSettings.CONFIGURATION);
     console.log('Build Dir     :', buildDir);
 
     console.log('Nuget Settings:', nugetSettings);
+    console.log('Nuget Package :', buildSettings.nugetPackage);
 
     done();
 });
@@ -126,33 +177,20 @@ gulp.task('publish-win10', gulp.series('test', (done) => {
 
 // Create NuGet package from existinbg project(s)
 gulp.task('nuget-pack', gulp.series('load-settings', 'test', (done) => {
-    console.log(clc.blueBright('Starting Execution of Pack - Creation of nuget packages'));
+    let allPromises = [];
+    buildSettings.NUGETPACKAGES.forEach(function(currentPackage) {
+        if (buildSettings.nugetPackage !== 'All' && currentPackage.Name !== buildSettings.nugetPackage) {
+            return;
+        }
+        allPromises.push(packNugetPackage(currentPackage));
+    });
 
-    const testFilter = filter(['src/**/*.csproj', '!src/**/*Tests.csproj'], { restore: true })
-    let nugetVersion = buildSettings.VERSION;
-    if (buildSettings.ISBETA) {
-        nugetVersion += '-beta';
-    }
-
-    console.log(clc.blueBright('NuGet package version: ' + nugetVersion));
-
-    return gulp.src('src/**/*.csproj', {read: false})
-        .pipe(pack({
-            configuration: buildSettings.CONFIGURATION,
-            version: nugetVersion,
-            noBuild: true,
-            includeSymbols: false,
-            output: path.join(buildDir, '/buildoutput/nuget'),
-            runtime: 'netstandard2.0'
-        }))
-        .on('error', function(err) {
-            console.log(clc.red.bold('Error during Publish - Win10: ', err));
-            done(err);
-        })
-        .on('end', function() { 
-            console.log(clc.blueBright('Execution of Publish - Win10 completed successfully'));
-            done();
-        });
+    Promise.all(allPromises).then(function() {
+        console.log('All Packages created ...');
+        done();
+    }, function(error) {
+        done(error);
+    })
 }));
 
 // Push nuget packages to a server

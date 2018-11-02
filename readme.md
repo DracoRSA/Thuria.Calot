@@ -4,8 +4,7 @@ Thuria - Calot
 Overview
 ---
 
-This package consists of a set of helper methods to help with some of the repetititive tests that is done 
-when we are unit testing our applications.
+A set of packages with a set of helper methods to assist with some of the repetitive tests that is done when we are unit testing our applications.
 
 
 
