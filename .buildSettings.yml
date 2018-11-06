@@ -3,6 +3,6 @@ CONFIGURATION: Debug
 NUGETPACKAGES:
   - TestUtilities:
     Name: Calot.TestUtilities
-    Version: 0.0.6
+    Version: 0.0.7
     Location: src/Thuria.Calot.TestUtilities
     IsBeta: true
