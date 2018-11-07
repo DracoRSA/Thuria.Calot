@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/DracoRSA/Thuria.Calot</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/DracoRSA/Thuria.Calot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>Thuria NUnit TestUtilities</PackageTags>
+    <Version>0.0.7-beta</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -21,7 +22,7 @@
     <PackageReference Include="Moq" Version="4.10.0" />
     <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="Thuria.Zitidar.Extensions" Version="0.0.11-beta" />
+    <PackageReference Include="Thuria.Zitidar.Extensions" Version="0.0.13-beta" />
   </ItemGroup>
 
 </Project>

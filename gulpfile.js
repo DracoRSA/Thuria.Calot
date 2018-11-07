@@ -7,6 +7,7 @@ let del = require('gulp-clean');
 let argv = require('yargs').argv;
 let stream = require('stream');
 let exec = require('child_process').exec;
+let fs = require('fs');
 
 let {clean, restore, build, test, pack, publish, push, run} = require('gulp-dotnet-cli');
 
@@ -19,6 +20,45 @@ let nugetSettings     = { };
 // Example Usage: 
 // npm run nugetPack -- --package=Thark.Core
 // npm run nugetPublish -- --package=Thark.Core
+
+let updateProjectVersion = async (currentNugetPackage) => {
+    console.log(clc.blueBright('Updating Nuget Package Project Version:' + currentNugetPackage.Name));
+
+    let packageLocation = currentNugetPackage.Location + '/Thuria.' + currentNugetPackage.Name + '.csproj';
+    let packageVersion = currentNugetPackage.Version + (currentNugetPackage.IsBeta ? '-beta' : '');
+
+    return new Promise((resolve, reject) => {
+        fs.readFile(packageLocation, 'utf8', function(err, data) {
+            if (err) {
+                console.log(clc.red.bold(`Failed to read ${packageLocation} [${err}]`));
+                reject(err);
+                return;
+            }
+
+            let startIndex = data.indexOf("<Version>") + 9;
+            let endIndex = data.indexOf("</Version>");
+            let currentVersion = data.slice(startIndex, endIndex);
+            if (currentVersion === packageVersion) {
+                console.log(`${currentNugetPackage.Name} - Version match. Nothing to do.`)
+                resolve();
+                return;
+            }
+
+            console.log(`${currentNugetPackage.Name} - Updating Version from ${currentVersion} to ${packageVersion}`);
+            let replaceResult = data.replace(currentVersion, packageVersion);
+
+            fs.writeFile(packageLocation, replaceResult, 'utf8', function(err) {
+                if (err) {
+                    console.log(clc.red.bold(`Failed to write ${packageLocation} [${err}]`));
+                    reject(err);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    });
+};
 
 let packNugetPackage = async (currentNugetPackage) => {
     console.log(clc.blueBright('Creating Nuget Package:' + currentNugetPackage.Name));
@@ -38,8 +78,7 @@ let packNugetPackage = async (currentNugetPackage) => {
         let processCommand = 'dotnet pack ';
         let processArgs = packageLocation +
                           ' --output ' + packConfiguration.output +
-                          ' --no-build --no-restore --configuration ' + packConfiguration.configuration +
-                          ` /p:Version=${packConfiguration.version}`;
+                          ' --no-build --no-restore --configuration ' + packConfiguration.configuration;
 
         var childProcess = exec(processCommand + processArgs, {maxBuffer: 500 *1024 }, function(err, stdout, stderr) {
             if (err) {
@@ -175,8 +214,26 @@ gulp.task('publish-win10', gulp.series('test', (done) => {
         });
 }));
 
+// Update NuGet package versions
+gulp.task('nuget-update-versions', gulp.series('load-settings', (done) => {
+    let allPromises = [];
+    buildSettings.NUGETPACKAGES.forEach(function(currentPackage) {
+        if (buildSettings.nugetPackage !== 'All' && currentPackage.Name !== buildSettings.nugetPackage) {
+            return;
+        }
+        allPromises.push(updateProjectVersion(currentPackage));
+    });
+
+    Promise.all(allPromises).then(function() {
+        console.log('All Version(s) updated ...');
+        done();
+    }, function(error) {
+        done(error);
+    })
+}));
+
 // Create NuGet package from existinbg project(s)
-gulp.task('nuget-pack', gulp.series('load-settings', 'test', (done) => {
+gulp.task('nuget-pack', gulp.series('load-settings', 'test', 'nuget-update-versions', (done) => {
     let allPromises = [];
     buildSettings.NUGETPACKAGES.forEach(function(currentPackage) {
         if (buildSettings.nugetPackage !== 'All' && currentPackage.Name !== buildSettings.nugetPackage) {
