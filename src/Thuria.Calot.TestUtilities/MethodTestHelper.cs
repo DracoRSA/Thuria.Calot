@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
 
@@ -24,13 +25,8 @@ namespace Thuria.Calot.TestUtilities
       if (methodName == null) { throw new ArgumentNullException(nameof(methodName)); }
       if (parameterName == null) { throw new ArgumentNullException(nameof(parameterName)); }
 
-      var methodInfo = typeof(T).GetMethod(methodName);
-      if (methodInfo == null)
-      {
-        throw new InvalidOperationException($"Method [{methodName}] does not exists on {typeof(T).FullName}");
-      }
-
-      var methodParameters = methodInfo.GetParameters();
+      var methodInfo            = GetMethodInformation<T>(methodName, parameterName);
+      var methodParameters      = methodInfo.GetParameters();
       var methodParameterValues = new List<object>();
 
       foreach (var currentParameter in methodParameters)
@@ -46,7 +42,7 @@ namespace Thuria.Calot.TestUtilities
 
       var constructedObject = ConstructorTestHelper.ConstructObject(typeof(T));
 
-      var invocationException = Assert.Throws<TargetInvocationException>(() => methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()));
+      var invocationException   = Assert.Throws<TargetInvocationException>(() => methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()));
       var argumentNullException = (invocationException.InnerException as ArgumentNullException);
       if (argumentNullException == null)
       {
@@ -54,6 +50,42 @@ namespace Thuria.Calot.TestUtilities
       }
 
       argumentNullException.ParamName.Should().Be(parameterName);
+    }
+
+    private static MethodInfo GetMethodInformation<T>(string methodName, string parameterName)
+    {
+      var allMethodInfos = typeof(T).GetMethods().Where(info => info.Name == methodName).ToList();
+      if (allMethodInfos == null || !allMethodInfos.Any())
+      {
+        throw new InvalidOperationException($"Method [{methodName}] does not exists on {typeof(T).FullName}");
+      }
+
+      MethodInfo methodInfo = null;
+      if (allMethodInfos.Count > 1)
+      {
+        foreach (var currentMethodInfo in allMethodInfos)
+        {
+          var parameterInfo = currentMethodInfo.GetParameters().FirstOrDefault(info => info.Name == parameterName);
+          if (parameterInfo == null)
+          {
+            continue;
+          }
+
+          methodInfo = currentMethodInfo;
+          break;
+        }
+      }
+      else
+      {
+        methodInfo = allMethodInfos.First();
+      }
+
+      if (methodInfo == null)
+      {
+        throw new InvalidOperationException($"Method [{methodName}] does not contain parameter named {parameterName}");
+      }
+
+      return methodInfo;
     }
   }
 }
