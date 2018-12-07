@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -13,6 +14,39 @@ namespace Thuria.Calot.TestUtilities
   /// </summary>
   public static class MethodTestHelper
   {
+    /// <summary>
+    /// Validate that if a specified argument value is null, that a ArgumentNullException is thrown on an Async method
+    /// </summary>
+    /// <typeparam name="T">Type under test</typeparam>
+    /// <param name="methodName">Method to be test</param>
+    /// <param name="parameterName">Method Parameter Name to verify</param>
+    /// <param name="parameterValue">Parameter Value (Default null)</param>
+    public static void ValidateArgumentNullExceptionIfParameterIsNullAsync<T>(string methodName, string parameterName, object parameterValue = null)
+    {
+      if (methodName == null) { throw new ArgumentNullException(nameof(methodName)); }
+      if (parameterName == null) { throw new ArgumentNullException(nameof(parameterName)); }
+
+      var methodInfo = GetMethodInformation<T>(methodName, parameterName);
+      var methodParameters = methodInfo.GetParameters();
+      var methodParameterValues = new List<object>();
+
+      foreach (var currentParameter in methodParameters)
+      {
+        if (!string.IsNullOrWhiteSpace(parameterName) && currentParameter.Name == parameterName)
+        {
+          methodParameterValues.Add(parameterValue);
+          continue;
+        }
+
+        methodParameterValues.Add(currentParameter.CreateRandomValue());
+      }
+
+      var constructedObject     = ConstructorTestHelper.ConstructObject(typeof(T));
+      var argumentNullException = Assert.ThrowsAsync<ArgumentNullException>(() => (Task)methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()),
+                                                                          $"ArgumentNullException not throw for Method [{methodName}] Parameter [{parameterName}] on {typeof(T).FullName}");
+      argumentNullException.ParamName.Should().Be(parameterName);
+    }
+
     /// <summary>
     /// Validate that if a specified argument value is null, that a ArgumentNullException is thrown
     /// </summary>
@@ -40,9 +74,9 @@ namespace Thuria.Calot.TestUtilities
         methodParameterValues.Add(currentParameter.CreateRandomValue());
       }
 
-      var constructedObject = ConstructorTestHelper.ConstructObject(typeof(T));
+      var constructedObject   = ConstructorTestHelper.ConstructObject(typeof(T));
+      var invocationException = Assert.Throws<TargetInvocationException>(() => methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()));
 
-      var invocationException   = Assert.Throws<TargetInvocationException>(() => methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()));
       var argumentNullException = (invocationException.InnerException as ArgumentNullException);
       if (argumentNullException == null)
       {
