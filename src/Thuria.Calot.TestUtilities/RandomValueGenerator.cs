@@ -12,19 +12,18 @@ namespace Thuria.Calot.TestUtilities
   /// </summary>
   public class RandomValueGenerator
   {
-    private const long MinimumNumber = 0;
-    private const long MaximumNumber = 20;
+    private const int MinimumNumber = 0;
+    private const int MaximumNumber = 20;
     private const int MinimumLengthString = 8;
     private const string DefaultRandomStringChars = "abcdefghijklmnopqrstuvwxyz1234567890";
     private const int MinimumCollectionItems = 1;
     private const int MaximumCollectionItems = 10;
 
-    private static readonly Random RandomValue = new Random();
-
     private static readonly Dictionary<Type, Func<object>> RandomValueGenerators = new Dictionary<Type, Func<object>>
       {
         { typeof(bool), () => CreateRandomBoolean() },
         { typeof(uint), () => CreateRandomUInt() },
+        { typeof(short), () => CreateRandomInt() },
         { typeof(int), () => CreateRandomInt() },
         { typeof(long), () => CreateRandomLong() },
         { typeof(double), () => CreateRandomDouble() },
@@ -41,13 +40,13 @@ namespace Thuria.Calot.TestUtilities
     /// </summary>
     /// <param name="minimumValue">Minimum Value</param>
     /// <param name="maximumValue">Maximum Number</param>
-    /// <returns>Random long</returns>
+    /// <returns>Random Integer</returns>
     public static long CreateRandomNumber(long minimumValue = MinimumNumber, long maximumValue = MaximumNumber)
     {
-      var randomNextValue = (long)RandomValue.NextDouble();
-      var range           = maximumValue - minimumValue + 1;
+      var randomNextValue = ThreadLocalRandom.NextDouble();
+      var randomRange = maximumValue - minimumValue + 1;
 
-      return minimumValue + (long)(range * randomNextValue);
+      return minimumValue + (long)(randomRange * randomNextValue);
     }
 
     /// <summary>
@@ -76,8 +75,8 @@ namespace Thuria.Calot.TestUtilities
 
       if (randomType != null && randomType.IsGenericType)
       {
-        if (randomType.GetGenericTypeDefinition() == typeof(IEnumerable<>) || 
-            randomType.GetGenericTypeDefinition() == typeof(IList<>) || 
+        if (randomType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+            randomType.GetGenericTypeDefinition() == typeof(IList<>) ||
             randomType.GetGenericTypeDefinition() == typeof(List<>))
         {
           return CreateRandomCollection(randomType.GenericTypeArguments[0]);
@@ -111,6 +110,10 @@ namespace Thuria.Calot.TestUtilities
     {
       var actualMaxLength = maxLength ?? minLength + MinimumLengthString;
       var actualLength = CreateRandomInt(minLength, actualMaxLength);
+      if (actualLength > actualMaxLength)
+      {
+        actualLength = actualMaxLength;
+      }
 
       var chars = new List<char>();
       if (charSet == null)
@@ -122,7 +125,7 @@ namespace Thuria.Calot.TestUtilities
 
       for (var i = 0; i < actualLength; i++)
       {
-        var characterPosition = CreateRandomInt(0, charSetLength - 1);
+        var characterPosition = CreateRandomInt(1, charSetLength - 1);
         chars.Add(charSet[characterPosition]);
       }
 
@@ -146,7 +149,7 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>Random uint value</returns>
     public static uint CreateRandomUInt(uint minimumValue = uint.MinValue, uint maximumValue = uint.MaxValue)
     {
-      return (uint)CreateRandomLong(minimumValue, maximumValue);
+      return (uint)CreateRandomLong((int)minimumValue, (int)maximumValue);
     }
 
     /// <summary>
@@ -155,9 +158,9 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="minimumValue">Minimum Value (Optional)</param>
     /// <param name="maximumValue">Maximum Value (Optional)</param>
     /// <returns>Random int value</returns>
-    private static int CreateRandomInt(int minimumValue = int.MinValue, int maximumValue = int.MaxValue)
+    public static int CreateRandomInt(int minimumValue = int.MinValue, int maximumValue = int.MaxValue)
     {
-      return (int)CreateRandomLong(minimumValue, maximumValue);
+      return (int)CreateRandomNumber(minimumValue, maximumValue);
     }
 
     /// <summary>
@@ -166,12 +169,9 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="minimumValue">Minimum Value (Optional)</param>
     /// <param name="maximumValue">Maximum Value (Optional)</param>
     /// <returns>Random long value</returns>
-    public static long CreateRandomLong(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
+    public static long CreateRandomLong(int minimumValue = int.MinValue, int maximumValue = int.MaxValue)
     {
-      var randomNumber = CreateRandomNumber(minimumValue, maximumValue);
-      var range        = maximumValue - minimumValue + 1;
-
-      return minimumValue + (range * randomNumber);
+      return CreateRandomNumber(minimumValue, maximumValue);
     }
 
     /// <summary>
@@ -182,8 +182,8 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>Random double value</returns>
     public static double CreateRandomDouble(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
     {
-      double randomNumber = CreateRandomNumber(minimumValue, maximumValue);
-      double range        = maximumValue - minimumValue + 1;
+      double randomNumber = CreateRandomNumber((int)minimumValue, (int)maximumValue);
+      double range = maximumValue - minimumValue + 1;
 
       return (double)(minimumValue + (range * randomNumber));
     }
@@ -195,9 +195,9 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>An array with the generated byte(s)</returns>
     public static byte[] CreateRandomBytes(int noOfBytes)
     {
-      var actualLength  = CreateRandomInt(1, noOfBytes);
-      var chars         = new List<char>();
-      var charSet       = DefaultRandomStringChars;
+      var actualLength = CreateRandomInt(1, noOfBytes);
+      var chars = new List<char>();
+      var charSet = DefaultRandomStringChars;
       var charSetLength = charSet.Length;
 
       for (var i = 0; i < actualLength; i++)
@@ -234,7 +234,7 @@ namespace Thuria.Calot.TestUtilities
     private static T CreateRandomFrom<T>(IEnumerable<T> items)
     {
       var itemArray = items as T[] ?? items.ToArray();
-      var maxValue  = itemArray.Length - 1;
+      var maxValue = itemArray.Length - 1;
       return itemArray.Skip(CreateRandomInt(0, maxValue)).First();
     }
 
@@ -247,9 +247,9 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>A Collection of Random values of the specified type</returns>
     public static object CreateRandomCollection(Type genericCollectionType, int minItems = MinimumCollectionItems, int maxItems = MaximumCollectionItems)
     {
-      var listType         = typeof(List<>).MakeGenericType(new[] { genericCollectionType });
+      var listType = typeof(List<>).MakeGenericType(new[] { genericCollectionType });
       var randomCollection = (IList)Activator.CreateInstance(listType);
-      var howMany          = CreateRandomInt(minItems, maxItems);
+      var howMany = CreateRandomInt(minItems, maxItems);
 
       for (var loopCount = 0; loopCount < howMany; loopCount++)
       {
@@ -304,11 +304,11 @@ namespace Thuria.Calot.TestUtilities
 
       var minTicks = (minDate ?? new DateTime(1990, 1, 1)).Ticks;
       var maxTicks = (maxDate ?? new DateTime(2020, 12, 31)).Ticks;
-      var range    = maxTicks - minTicks;
+      var range = maxTicks - minTicks;
 
-      var actualTicks = minTicks + (range + RandomValue.NextDouble());
-      var rawDateTime = new DateTime((long) actualTicks);
-      var sanitised   = new DateTime(rawDateTime.Year, rawDateTime.Month, rawDateTime.Day,
+      var actualTicks = minTicks + (range + ThreadLocalRandom.NextDouble());
+      var rawDateTime = new DateTime((long)actualTicks);
+      var sanitised = new DateTime(rawDateTime.Year, rawDateTime.Month, rawDateTime.Day,
                                      rawDateTime.Hour, rawDateTime.Minute, rawDateTime.Second, rawDateTime.Millisecond,
                                      dateKind);
 
@@ -323,8 +323,8 @@ namespace Thuria.Calot.TestUtilities
       if (minTime > maxTime)
       {
         var swap = minTime;
-        minTime  = maxTime;
-        maxTime  = swap;
+        minTime = maxTime;
+        maxTime = swap;
       }
 
       return value > maxTime || value < minTime

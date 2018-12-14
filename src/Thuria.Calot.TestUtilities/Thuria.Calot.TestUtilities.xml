@@ -64,7 +64,6 @@
             <param name="methodName">Method to be test</param>
             <param name="parameterName">Method Parameter Name to verify</param>
             <param name="parameterValue">Parameter Value (Default null)</param>
-            <param name="isAsyncMethod">Is Async Method</param>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.MockExtensions">
             <summary>
@@ -108,7 +107,7 @@
             </summary>
             <param name="minimumValue">Minimum Value</param>
             <param name="maximumValue">Maximum Number</param>
-            <returns>Random long</returns>
+            <returns>Random Integer</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomValue(System.Type)">
             <summary>
@@ -148,7 +147,7 @@
             <param name="maximumValue">Maximum Value (Optional)</param>
             <returns>Random int value</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomLong(System.Int64,System.Int64)">
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomLong(System.Int32,System.Int32)">
             <summary>
             Create Random Long
             </summary>
@@ -262,6 +261,51 @@
             <param name="allParameters">List of Parameters</param>
             <param name="nullParameterName">Parameter that should be null</param>
             <returns>List of random generated parameter values</returns>
+        </member>
+        <member name="T:Thuria.Calot.TestUtilities.ThreadLocalRandom">
+            <summary> 
+            Convenience class for dealing with randomness. 
+            </summary> 
+        </member>
+        <member name="F:Thuria.Calot.TestUtilities.ThreadLocalRandom.GlobalRandom">
+            <summary> 
+            Random number generator used to generate seeds, 
+            which are then used to create new random number 
+            generators on a per-thread basis. 
+            </summary> 
+        </member>
+        <member name="F:Thuria.Calot.TestUtilities.ThreadLocalRandom.ThreadRandom">
+            <summary> 
+            Random number generator 
+            </summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.NewRandom">
+            <summary> 
+            Creates a new instance of Random. The seed is derived 
+            from a global (static) instance of Random, rather 
+            than time. 
+            </summary> 
+        </member>
+        <member name="P:Thuria.Calot.TestUtilities.ThreadLocalRandom.Instance">
+            <summary> 
+            Returns an instance of Random which can be used freely 
+            within the current thread. 
+            </summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.Next">
+            <summary>See <see cref="M:System.Random.Next" /></summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.Next(System.Int32)">
+            <summary>See <see cref="M:System.Random.Next(System.Int32)" /></summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.Next(System.Int32,System.Int32)">
+            <summary>See <see cref="M:System.Random.Next(System.Int32,System.Int32)" /></summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.NextDouble">
+            <summary>See <see cref="M:System.Random.NextDouble" /></summary> 
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ThreadLocalRandom.NextBytes(System.Byte[])">
+            <summary>See <see cref="M:System.Random.NextBytes(System.Byte[])" /></summary> 
         </member>
     </members>
 </doc>
