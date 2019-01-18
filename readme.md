@@ -103,7 +103,9 @@ RandomValueGenerator
 The Random Value Generator can generate random values for the following data types:
 
 * bool
+* ushort _(Can specify range - min & max)_
 * uint _(Can specify range - min & max)_
+* ulong _(Can specify range - min & max)_
 * int _(Can specify range - min & max)_
 * long _(Can specify range - min & max)_
 * double _(Can specify range - min & max)_

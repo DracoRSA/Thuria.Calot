@@ -37,7 +37,7 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>Newly constructed object</returns>
     public static object ConstructObject(Type objectType, string parameterName = null, object parameterValue = null)
     {
-      var constructorInfo = objectType.GetConstructors().OrderBy(info => info.GetParameters().Length).FirstOrDefault();
+      var constructorInfo = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).FirstOrDefault();
       if (constructorInfo == null)
       {
         throw new Exception($"No Constructors found for object {objectType.FullName}");

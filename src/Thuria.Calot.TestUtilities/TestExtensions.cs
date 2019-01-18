@@ -37,7 +37,7 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>NSubstitute Mocked object</returns>
     public static object CreateSubstitute(this Type objectType)
     {
-      var constructorInfo       = objectType.GetConstructors().OrderBy(info => info.GetParameters().Length).FirstOrDefault();
+      var constructorInfo       = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).FirstOrDefault();
       var constructorParameters = constructorInfo?.GetParameters();
 
       if (constructorInfo == null || !constructorParameters.Any())

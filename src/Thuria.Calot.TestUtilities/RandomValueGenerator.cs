@@ -22,7 +22,9 @@ namespace Thuria.Calot.TestUtilities
     private static readonly Dictionary<Type, Func<object>> RandomValueGenerators = new Dictionary<Type, Func<object>>
       {
         { typeof(bool), () => CreateRandomBoolean() },
+        { typeof(ushort), () => CreateRandomUShort() },
         { typeof(uint), () => CreateRandomUInt() },
+        { typeof(ulong), () => CreateRandomULong() },
         { typeof(short), () => CreateRandomInt() },
         { typeof(int), () => CreateRandomInt() },
         { typeof(long), () => CreateRandomLong() },
@@ -142,6 +144,17 @@ namespace Thuria.Calot.TestUtilities
     }
 
     /// <summary>
+    /// Create Random ushort
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random ushort value</returns>
+    public static ushort CreateRandomUShort(ushort minimumValue = ushort.MinValue, ushort maximumValue = ushort.MaxValue)
+    {
+      return (ushort)CreateRandomLong((int)minimumValue, (int)maximumValue);
+    }
+
+    /// <summary>
     /// Create Random uint
     /// </summary>
     /// <param name="minimumValue">Minimum Value (Optional)</param>
@@ -150,6 +163,17 @@ namespace Thuria.Calot.TestUtilities
     public static uint CreateRandomUInt(uint minimumValue = uint.MinValue, uint maximumValue = uint.MaxValue)
     {
       return (uint)CreateRandomLong((int)minimumValue, (int)maximumValue);
+    }
+
+    /// <summary>
+    /// Create Random ulong
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random ulong value</returns>
+    public static ulong CreateRandomULong(ulong minimumValue = ulong.MinValue, ulong maximumValue = ulong.MaxValue)
+    {
+      return (ulong)CreateRandomLong((int)minimumValue, (int)maximumValue);
     }
 
     /// <summary>
