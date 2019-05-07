@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Reflection;
 using NUnit.Framework;
 using FluentAssertions;
 
@@ -49,6 +49,37 @@ namespace Thuria.Calot.TestUtilities
       var returnedValue = objectUnderTest.GetPropertyValue(propertyName);
 
       returnedValue.Should().BeEquivalentTo(propertyValue);
+    }
+
+    /// <summary>
+    /// Validate that a property has been decorated with a specified Attribute
+    /// </summary>
+    /// <typeparam name="T">Object Type under test</typeparam>
+    /// <typeparam name="TA">Attribute Type</typeparam>
+    /// <param name="propertyName">Object Property Name</param>
+    /// <param name="attributeType">Attribute Type</param>
+    /// <param name="attributePropertyValue">Attribute Property Values</param>
+    public static void ValidateDecoratedWithAttribute<T>(string propertyName, Type attributeType, params dynamic[] attributePropertyValue)
+      where T : class
+    {
+      var objectUnderTest = ConstructorTestHelper.ConstructObject<T>();
+      if (objectUnderTest == null)
+      {
+        Assert.Fail($"Failed to create {typeof(T).FullName} to test Property Get and Set for {propertyName}");
+      }
+
+      if (propertyName == null) { throw new ArgumentNullException(nameof(propertyName)); }
+      if (!objectUnderTest.DoesPropertyExist(propertyName))
+      {
+        throw new InvalidOperationException($"Property [{propertyName}] does not exists on {objectUnderTest.GetType().FullName}");
+      }
+
+      var propertyInfo    = objectUnderTest.GetType().GetProperty(propertyName);
+      var customAttribute = propertyInfo.PropertyType.GetCustomAttribute(attributeType);
+      if (customAttribute == null)
+      {
+        Assert.Fail($"Property {propertyName} is not decorated with {attributeType.Name} Attribute");
+      }
     }
   }
 }
