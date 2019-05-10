@@ -52,6 +52,22 @@ Examples:
       //---------------Test Result -----------------------
     }
 
+    [Test]
+    public void ValidateDecoratedWithAttribute_ShouldSetAttributeWithExpectedValues()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => PropertyTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>("TestDictionary",
+                                                                                                 typeof(FakeTestAttribute),
+                                                                                                 new List<(string propertyName, object propertyValue)>
+                                                                                                   {
+                                                                                                     ("Name", "TestDictionary"),
+                                                                                                     ("Sequence", 23)
+                                                                                                   }));
+      //---------------Test Result -----------------------
+    }
+
 ---
 PropertyTestHelper
 ---
@@ -59,7 +75,8 @@ PropertyTestHelper
 The Property Test Helper consists of the following helper methods:
 
 * ValidateGetAndSet\<T>(propertyName)
-* ValidateGetAndSet(object6Type, propertyName)
+* ValidateGetAndSet(objectType, propertyName)
+* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType)
 
 Examples:
 
@@ -71,6 +88,17 @@ Examples:
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       PropertyTestHelper.ValidateGetAndSet<DatabaseContext>(propertyName);
+      //---------------Test Result -----------------------
+    }
+
+>    
+    [TestCase("TestProperty", typeof(SomeAttribute)]
+    public void Properties_ShouldBeDecoratedWithAttribute(string propertyName, Type attributeType)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      PropertyTestHelper.ValidateDecoratedWithAttribute<DatabaseContext>(propertyName, attributeType);
       //---------------Test Result -----------------------
     }
 

@@ -44,10 +44,17 @@ namespace Thuria.Calot.TestUtilities.Tests
     public DateTime TestDateTime { get; private set; }
 
     public FakeComplex ComplexObject1 { get; private set; }
+
+    [FakeTest("ComplexObject2")]
     public FakeComplex ComplexObject2 { get; private set; }
+
+    [FakeTest("ComplexObject2")]
     public IFakeComplex ComplexObject3 { get; private set; }
+
     public FakeTestEnum TestEnum { get; private set; }
     public IEnumerable<IFakeComplex> FakeList { get; private set; }
+
+    [FakeTest("TestDictionary", Sequence = 23)]
     public Dictionary<string, string> TestDictionary { get; private set; }
   }
 }
