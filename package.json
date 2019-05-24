@@ -1,6 +1,6 @@
 {
   "name": "thuria.calot",
-  "version": "0.0.1",
+  "version": "0.4.0",
   "description": "Thuria Calot",
   "main": "index.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "gulp-clean": "^0.4.0",
     "gulp-dotnet-cli": "^1.1.0",
     "gulp-filter": "^5.1.0",
-    "gulp4": "^4.0.2",
+    "gulp4": "^4.0.3",
     "stream": "0.0.2",
     "through2": "^2.0.3",
     "yamljs": "^0.3.0",

@@ -10,6 +10,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C11B4967-1D6F-48E1-AD64-03B562A5134A}"
 	ProjectSection(SolutionItems) = preProject
 		..\.buildSettings.yml = ..\.buildSettings.yml
+		..\.gitignore = ..\.gitignore
+		..\gulpfile.js = ..\gulpfile.js
+		..\package.json = ..\package.json
 		..\readme.md = ..\readme.md
 	EndProjectSection
 EndProject

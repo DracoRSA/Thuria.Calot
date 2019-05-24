@@ -92,11 +92,12 @@ namespace Thuria.Calot.TestUtilities.Tests
       exception.Message.Should().Be($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
     }
 
-    [Test]
-    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsThrown_ShouldPassTest()
+    [TestCase("testName")]
+    [TestCase("complexObject")]
+    [TestCase("complexInterface")]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsThrown_ShouldPassTest(string parameterName)
     {
       //---------------Set up test pack-------------------
-      var parameterName = "complexObject";
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName));
