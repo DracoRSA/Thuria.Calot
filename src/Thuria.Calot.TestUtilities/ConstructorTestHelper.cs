@@ -21,11 +21,13 @@ namespace Thuria.Calot.TestUtilities
     /// <typeparam name="T">Object Type to be Constructed</typeparam>
     /// <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
     /// <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+    /// <param name="constructorParams">Optional Constructor Parameters</param>
     /// <returns>Newly constructed object</returns>
-    public static T ConstructObject<T>(string parameterName = null, object parameterValue = null) 
+    public static T ConstructObject<T>(string parameterName = null, object parameterValue = null, 
+                                       params (string parameterName, object parameterValue)[] constructorParams) 
       where T : class
     {
-      return (T) ConstructObject(typeof(T), parameterName, parameterValue);
+      return (T) ConstructObject(typeof(T), parameterName, parameterValue, constructorParams);
     }
 
     /// <summary>
@@ -34,8 +36,10 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="objectType">Object Type to be Constructed</param>
     /// <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
     /// <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+    /// <param name="constructorParams">Optional Constructor Parameters</param>
     /// <returns>Newly constructed object</returns>
-    public static object ConstructObject(Type objectType, string parameterName = null, object parameterValue = null)
+    public static object ConstructObject(Type objectType, string parameterName = null, object parameterValue = null, 
+                                         params (string parameterName, object parameterValue)[] constructorParams)
     {
       var constructorInfo = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).FirstOrDefault();
       if (constructorInfo == null)
@@ -54,6 +58,16 @@ namespace Thuria.Calot.TestUtilities
           continue;
         }
 
+        if (constructorParams.Length > 0)
+        {
+          var (_, paramsValue) = constructorParams.FirstOrDefault(tuple => tuple.parameterName == currentParameter.Name);
+          if (paramsValue != null)
+          {
+            constructorParameterValues.Add(paramsValue);
+            continue;
+          }
+        }
+
         constructorParameterValues.Add(currentParameter.CreateRandomValue());
       }
 
@@ -65,12 +79,14 @@ namespace Thuria.Calot.TestUtilities
     /// </summary>
     /// <typeparam name="T">Object Type to test</typeparam>
     /// <param name="parameterName">Parameter Name to test</param>
-    public static void ValidateArgumentNullExceptionIfParameterIsNull<T>(string parameterName) 
+    /// <param name="constructorParams">Optional Constructor Parameters</param>
+    public static void ValidateArgumentNullExceptionIfParameterIsNull<T>(string parameterName, 
+                                                                         params (string parameterName, object parameterValue)[] constructorParams) 
       where T : class
     {
       try
       {
-        ConstructObject<T>(parameterName);
+        ConstructObject<T>(parameterName, constructorParams: constructorParams);
         Assert.Fail($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(T).FullName}");
       }
       catch (TargetInvocationException invocationException)

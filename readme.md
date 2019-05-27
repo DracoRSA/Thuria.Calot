@@ -21,9 +21,9 @@ ConstructorTestHelper
 
 The Constructor Test Helper consists of the following helper methods:
 
-* ConstructObject\<T>(parameterName, parameterValue)
-* ConstructObject(objectType, parameterName, parameterValue)
-* ValidateArgumentNullExceptionIfParameterIsNull\<T>(parameterName)
+* ConstructObject\<T>(parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
+* ConstructObject(objectType, parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
+* ValidateArgumentNullExceptionIfParameterIsNull\<T>(parameterName, params (string parameterName, object parameterValue)[] constructorParams)
 * ValidatePropertySetWithParameter\<T>(parameterName, propertyName)
 
 Examples:
@@ -65,6 +65,57 @@ Examples:
                                                                                                      ("Name", "TestDictionary"),
                                                                                                      ("Sequence", 23)
                                                                                                    }));
+      //---------------Test Result -----------------------
+    }
+    
+    [Test]
+    public void ConstructObject_GivenParameterValues_ShouldConstructObjectWithParameterValues()
+    {
+      //---------------Set up test pack-------------------
+      var testDateTime = DateTime.Now;
+      var fakeComplex  = new FakeComplex();
+
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var testClass = ConstructorTestHelper.ConstructObject<FakeTestClass>(constructorParams: parameterValues.ToArray());
+      //---------------Test Result -----------------------
+      testClass.TestDateTime.Should().BeSameDateAs(testDateTime);
+      testClass.ComplexObject2.Should().Be(fakeComplex);
+    }
+
+    [Test]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterValuesAndExceptionNotThrown_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var parameterName = "notSetParameter";
+      var testDateTime  = DateTime.Now;
+      var fakeComplex   = new FakeComplex();
+
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName, 
+                                                                                                                                                  parameterValues.ToArray()));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Contain($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
+    }
+
+    [TestCase("testName")]
+    [TestCase("complexObject")]
+    [TestCase("complexInterface")]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsThrownAndParameterValues_ShouldPassTest(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName, ("testDateTime", DateTime.Now)));
       //---------------Test Result -----------------------
     }
 

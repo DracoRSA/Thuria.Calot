@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 using FluentAssertions;
 
@@ -81,6 +84,25 @@ namespace Thuria.Calot.TestUtilities.Tests
     }
 
     [Test]
+    public void ConstructObject_GivenParameterValues_ShouldConstructObjectWithParameterValues()
+    {
+      //---------------Set up test pack-------------------
+      var testDateTime = DateTime.Now;
+      var fakeComplex  = new FakeComplex();
+
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var testClass = ConstructorTestHelper.ConstructObject<FakeTestClass>(constructorParams: parameterValues.ToArray());
+      //---------------Test Result -----------------------
+      testClass.TestDateTime.Should().BeSameDateAs(testDateTime);
+      testClass.ComplexObject2.Should().Be(fakeComplex);
+    }
+
+    [Test]
     public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsNotThrown_ShouldFailTest()
     {
       //---------------Set up test pack-------------------
@@ -101,6 +123,38 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName));
+      //---------------Test Result -----------------------
+    }
+
+    [Test]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterValuesAndExceptionNotThrown_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var parameterName = "notSetParameter";
+      var testDateTime  = DateTime.Now;
+      var fakeComplex   = new FakeComplex();
+
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName, 
+                                                                                                                                                  parameterValues.ToArray()));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Contain($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
+    }
+
+    [TestCase("testName")]
+    [TestCase("complexObject")]
+    [TestCase("complexInterface")]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsThrownAndParameterValues_ShouldPassTest(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName, ("testDateTime", DateTime.Now)));
       //---------------Test Result -----------------------
     }
 
