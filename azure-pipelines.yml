@@ -9,8 +9,8 @@ trigger:
 
 strategy:
   matrix:
-    linux:
-      imageName: "ubuntu-16.04"
+    # linux:
+    #   imageName: "ubuntu-16.04"
     windows:
       imageName: "vs2017-win2016"
   maxParallel: 2
@@ -23,6 +23,8 @@ steps:
   displayName: 'Install dotnet core 2.1.300'
   inputs:
     version: '2.2.300'
+- script: npm install
+
 
 # - task: DotNetCoreCLI@2
 #   displayName: 'Restore NuGet packages'
