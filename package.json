@@ -6,6 +6,7 @@
   "scripts": {
     "build": "gulp4 build-all",
     "test": "gulp4 test",
+    "testOnly": "gulp4 test-only",
     "publish": "gulp4 publish-all",
     "nugetPack": "gulp4 nuget-pack",
     "nugetPublish": "gulp4 publish-all-nuget",

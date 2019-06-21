@@ -177,15 +177,18 @@ gulp.task('build', gulp.series('restore', (done) => {
 }));
 
 // Execute Unit Tests
-gulp.task('test', gulp.series('build', (done) => {
+gulp.task('test', (done) => {
     console.log(clc.blueBright('Starting Execution of Unit Tests'));
+
+    let additionalArgs = '--collect:"Code Coverage"';
 
     return gulp.src('src/**/*Tests.csproj', {read: false})
         .pipe(test({ 
             verbosity: 'normal',
             noBuild: true,
             configuration: buildSettings.CONFIGURATION,
-            resultsDirectory: path.join(buildDir, 'buildoutput/testResults')
+            logger: 'trx',
+            additionalArgs: additionalArgs
         }))
         .on('error', function(err) {
             console.log(clc.red.bold('Error during Execution of Unit Tests: ', err));
@@ -195,7 +198,7 @@ gulp.task('test', gulp.series('build', (done) => {
             console.log(clc.blueBright('Execution of Unit Tests completed successfully'));
             done();
         });
-}));
+});
 
 // Publish the application to the local filesystem
 gulp.task('publish-win10', gulp.series('test', (done) => {
@@ -315,6 +318,12 @@ gulp.task('nuget-move-packages', gulp.series('nuget-copy-packages', done => {
 
 // Build-All
 gulp.task('build-all', gulp.series('load-settings', 'clean', 'build', (done) => {
+    console.log("Done ...")
+    done();
+}));
+
+// Test-Only
+gulp.task('test-only', gulp.series('load-settings', 'test', (done) => {
     console.log("Done ...")
     done();
 }));

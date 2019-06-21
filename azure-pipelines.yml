@@ -36,17 +36,23 @@ steps:
   inputs:
     command: 'custom'
     customCommand: 'run build'
-    
-- task: DotNetCoreCLI@2
+
+- task: Npm@1
   displayName: 'Executing tests'
   inputs:
-    command: test
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration:$(buildConfiguration) --logger:trx --collect:"Code Coverage" --results-directory:"buildoutput/testResults"'
+    command: 'custom'
+    customCommand: 'run testOnly'
+    
+# - task: DotNetCoreCLI@2
+#   displayName: 'Executing tests'
+#   inputs:
+#     command: test
+#     projects: '**/*Tests/*.csproj'
+#     arguments: '--configuration:$(buildConfiguration) --logger:trx --collect:"Code Coverage" --results-directory:"buildoutput/testResults"'
 
 - task: PublishTestResults@2
   displayName:  'Publish Test Results'
   inputs:
     testRunner: VSTest
-    testResultsFiles: 'buildoutput/testResults/*.trx'
+    testResultsFiles: '**/*.trx'
   
