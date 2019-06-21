@@ -1,4 +1,5 @@
 # Starter pipeline
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -21,27 +22,27 @@ steps:
 - task: DotNetCoreInstaller@0
   displayName: 'Install dotnet core 2.1.300'
   inputs:
-    version: '2.1.300'
+    version: '2.2.300'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Restore NuGet packages'
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
+# - task: DotNetCoreCLI@2
+#   displayName: 'Restore NuGet packages'
+#   inputs:
+#     command: restore
+#     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build Solution'
-  inputs:
-    command: build
-    projects: '**/*.csproj'
-    arguments: '--configuration Release'
+# - task: DotNetCoreCLI@2
+#   displayName: 'Build Solution'
+#   inputs:
+#     command: build
+#     projects: '**/*.csproj'
+#     arguments: '--configuration Release'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Execute Tests'
-  inputs:
-    command: test
-    projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+# - task: DotNetCoreCLI@2
+#   displayName: 'Execute Tests'
+#   inputs:
+#     command: test
+#     projects: '**/*Tests/*.csproj'
+#     arguments: '--configuration $(buildConfiguration)'
 
 #- task: DotNetCoreCLI@2
 #  displayName: 'Code Coverage'
@@ -50,4 +51,9 @@ steps:
 #    projects: '**/*Tests/*.csproj'
 #    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 
-- task: PublishBuildArtifacts@1
+#- task: PublishBuildArtifacts@1
+
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'run build'
