@@ -31,39 +31,14 @@ steps:
   inputs:
     secureFile: 'nugetSettings.yml'
 
-# - task: DotNetCoreCLI@2
-#   displayName: 'Restore NuGet packages'
-#   inputs:
-#     command: restore
-#     projects: '**/*.csproj'
-
-# - task: DotNetCoreCLI@2
-#   displayName: 'Build Solution'
-#   inputs:
-#     command: build
-#     projects: '**/*.csproj'
-#     arguments: '--configuration Release'
-
-# - task: DotNetCoreCLI@2
-#   displayName: 'Execute Tests'
-#   inputs:
-#     command: test
-#     projects: '**/*Tests/*.csproj'
-#     arguments: '--configuration $(buildConfiguration)'
-
-#- task: DotNetCoreCLI@2
-#  displayName: 'Code Coverage'
-#  inputs:
-#    command: test
-#    projects: '**/*Tests/*.csproj'
-#    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-
-#- task: PublishBuildArtifacts@1
-
-- script: dir *.yml
-
 - task: Npm@1
   displayName: 'Building project'
   inputs:
     command: 'custom'
     customCommand: 'run build'
+    
+- task: Npm@1
+  displayName: 'Executing tests'
+  inputs:
+    command: 'custom'
+    customCommand: 'run test'
