@@ -102,7 +102,7 @@ let packNugetPackage = async (currentNugetPackage) => {
 gulp.task('load-settings', function(done) {
     console.log(clc.blueBright('Loading Build Settings'));
 
-    nugetSettings = yaml.load('../nugetSettings.yml');
+    nugetSettings = yaml.load('./nugetSettings.yml');
     buildSettings = yaml.load('./.buildSettings.yml');
     buildSettings.nugetPackage = (argv.package === undefined) ? 'All' : argv.package;
 
