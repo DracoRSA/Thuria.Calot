@@ -42,4 +42,10 @@ steps:
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --logger trx --collect "Code Coverage" --output buildoutput/testResults'
+    arguments: '--configuration $(buildConfiguration) --logger trx --collect "Code Coverage"'
+
+- task: PublishTestResults@2
+  displayName:  'Publish Test Results'
+  inputs:
+    testRunner: VSTest
+    testResultsFiles: '**/*.trx'
