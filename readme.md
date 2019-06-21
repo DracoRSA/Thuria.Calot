@@ -1,3 +1,5 @@
+[![Build Status](https://dracorsa.visualstudio.com/Thuria%20-%20Calot/_apis/build/status/DracoRSA.Thuria.Calot?branchName=master)](https://dracorsa.visualstudio.com/Thuria%20-%20Calot/_build/latest?definitionId=1&branchName=master)
+
 Thuria - Calot
 ===
 
