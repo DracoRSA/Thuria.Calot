@@ -37,8 +37,9 @@ steps:
     command: 'custom'
     customCommand: 'run build'
     
-- task: Npm@1
+- task: DotNetCoreCLI@2
   displayName: 'Executing tests'
   inputs:
-    command: 'custom'
-    customCommand: 'run test'
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --logger trx --collect "Code Coverage" --output buildoutput/testResults'
