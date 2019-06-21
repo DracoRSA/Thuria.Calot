@@ -44,6 +44,8 @@ steps:
     projects: '**/*Tests/*.csproj'
     arguments: '--configuration $(buildConfiguration) --logger trx --collect "Code Coverage" --output buildoutput/testResults'
 
+- script: dir buildoutput/testResults
+
 - task: PublishTestResults@2
   displayName:  'Publish Test Results'
   inputs:
