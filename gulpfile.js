@@ -16,6 +16,7 @@ let nugetDir          = path.join(buildDir, '/buildoutput/nuget');
 let nugetPublishedDir = path.join(buildDir, '/buildoutput/nugetPublished');
 let buildSettings     = { };
 let nugetSettings     = { };
+let nugetSettingsFileLocation = process.env.DOWNLOADSECUREFILE_SECUREFILEPATH;
 
 // Example Usage: 
 // npm run nugetPack -- --package=Thark.Core
@@ -102,7 +103,15 @@ let packNugetPackage = async (currentNugetPackage) => {
 gulp.task('load-settings', function(done) {
     console.log(clc.blueBright('Loading Build Settings'));
 
-    nugetSettings = yaml.load('./nugetSettings.yml');
+    if (nugetSettingsFileLocation === undefined) {
+        console.log(clc.redBright('Loading local nuget settings file'));
+        nugetSettings = yaml.load('../nugetSettings.yml');
+    }
+    else {
+        console.log(clc.redBright('Loading Azure Devops secure nuget settings file'));
+        nugetSettings = yaml.load(nugetSettingsFileLocation);
+    }
+
     buildSettings = yaml.load('./.buildSettings.yml');
     buildSettings.nugetPackage = (argv.package === undefined) ? 'All' : argv.package;
 
