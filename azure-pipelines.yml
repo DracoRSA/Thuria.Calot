@@ -19,10 +19,16 @@ pool:
   vmImage: $(imageName)
 
 steps:
+- task: DownloadSecureFile@1
+  displayName: 'Download NuGet Settings'
+  inputs:
+    secureFile: 'nugetSettings.yml'
+
 - task: DotNetCoreInstaller@0
   displayName: 'Install dotnet core 2.1.300'
   inputs:
     version: '2.2.300'
+    
 - script: npm install
 
 
