@@ -18,7 +18,10 @@ namespace Thuria.Calot.TestUtilities.Tests
                          DateTime testDateTime,
                          FakeComplex complexObjectNotTested, FakeComplex complexObject, IFakeComplex complexInterface, 
                          FakeTestEnum testEnum,
-                         IEnumerable<IFakeComplex> allFakes = null, Dictionary<string, string> testDictionary = null)
+                         IEnumerable<IFakeComplex> allFakes = null,
+                         Dictionary<string, string> testDictionary = null,
+                         IDictionary<string, string> testDictionary2 = null)
+      : this(testDictionary, testDictionary2)
     {
       Id             = fakeId;
       Name           = testName ?? throw new ArgumentNullException(nameof(testName));
@@ -30,7 +33,12 @@ namespace Thuria.Calot.TestUtilities.Tests
       ComplexObject3 = complexInterface ?? throw new ArgumentNullException(nameof(complexInterface));
       TestEnum       = testEnum;
       FakeList       = allFakes;
-      TestDictionary = testDictionary;
+    }
+
+    public FakeTestClass(Dictionary<string, string> testDictionary = null, IDictionary<string, string> testDictionary2 = null)
+    {
+      TestDictionary = testDictionary ?? throw new ArgumentNullException(nameof(testDictionary));
+      TestDictionary2 = testDictionary2 ?? throw new ArgumentNullException(nameof(testDictionary2));
     }
 
     public Guid Id { get; private set; }
@@ -56,5 +64,7 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     [FakeTest("TestDictionary", Sequence = 23)]
     public Dictionary<string, string> TestDictionary { get; private set; }
+
+    public IDictionary<string, string> TestDictionary2 { get; private set; }
   }
 }

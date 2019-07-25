@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 using FluentAssertions;
+using Thuria.Zitidar.Extensions;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {
@@ -19,6 +20,23 @@ namespace Thuria.Calot.TestUtilities.Tests
       Assert.DoesNotThrow(() => testClass = ConstructorTestHelper.ConstructObject<FakeTestClass>());
       //---------------Test Result -----------------------
       testClass.Should().NotBeNull();
+    }
+
+    [TestCase("TestDictionary", typeof(Dictionary<string, string>))]
+    [TestCase("TestDictionary2", typeof(Dictionary<string, string>))]
+    public void ConstructObject_GivenGenericType_ShouldNotThrowExceptionAndConstructObjectWithValuesAsExpected(string propertyName, Type expectedType)
+    {
+      //---------------Set up test pack-------------------
+      FakeTestClass testClass = null;
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => testClass = ConstructorTestHelper.ConstructObject<FakeTestClass>());
+      //---------------Test Result -----------------------
+      testClass.Should().NotBeNull();
+
+      var propertyValue = testClass.GetPropertyValue(propertyName);
+      propertyValue.Should().NotBeNull();
+      propertyValue.Should().BeOfType(expectedType);
     }
 
     [Test]
@@ -117,6 +135,8 @@ namespace Thuria.Calot.TestUtilities.Tests
     [TestCase("testName")]
     [TestCase("complexObject")]
     [TestCase("complexInterface")]
+    [TestCase("testDictionary")]
+    [TestCase("testDictionary2")]
     public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsThrown_ShouldPassTest(string parameterName)
     {
       //---------------Set up test pack-------------------
