@@ -187,10 +187,13 @@ The Random Value Generator can generate random values for the following data typ
 * ushort _(Can specify range - min & max)_
 * uint _(Can specify range - min & max)_
 * ulong _(Can specify range - min & max)_
+* short _(Can specify range - min & max)_
 * int _(Can specify range - min & max)_
 * long _(Can specify range - min & max)_
 * double _(Can specify range - min & max)_
 * string _(Can specify length range - min & max)_
+* byte _(Can specify length range - min & max)_
+* byte[] _(Can specify length range - min & max)_
 * Guid
 * object
 * DateTime _(Can specify range - min & max)_
@@ -199,6 +202,16 @@ Other functionality:
  
 * **CreateRandomFrom\<T>** - Select random value from a collection of values
 * **CreateRandomCollection** - Create a collection of random values
+
+**CreateRandomValue(Type objectType)**\
+Create a random value of the specified type which will include all the types mentioned above\
+CreateRandomValue also have support to create the following types:
+
+* IEnumerable<>
+* IList<>
+* List<>
+* IDictionary<,>
+* Dictionary<,>
 
 ---
 TestHelper

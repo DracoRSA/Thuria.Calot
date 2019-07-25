@@ -84,9 +84,10 @@ namespace Thuria.Calot.TestUtilities
           return CreateRandomCollection(randomType.GenericTypeArguments[0]);
         }
 
-        if (randomType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        if (randomType.GetGenericTypeDefinition() == typeof(Dictionary<,>) ||
+            randomType.GetGenericTypeDefinition() == typeof(IDictionary<,>))
         {
-          return CreateRandomDictionary();
+          return CreateRandomDictionary(randomType);
         }
 
         throw new Exception($"Generic Type Generator for {randomType.Name} does not exist");
@@ -287,9 +288,27 @@ namespace Thuria.Calot.TestUtilities
     /// Create Random Dictionary
     /// </summary>
     /// <returns>A Random Dictionary</returns>
-    public static IDictionary<dynamic, dynamic> CreateRandomDictionary()
+    public static dynamic CreateRandomDictionary(Type objectType, int minItems = MinimumCollectionItems, int maxItems = MaximumCollectionItems)
     {
-      return null;
+      var genericArguments = objectType.GetGenericArguments();
+      var dictionaryType   = typeof(Dictionary<,>).MakeGenericType(genericArguments);
+      var randomDictionary = (IDictionary) Activator.CreateInstance(dictionaryType);
+      var howMany          = CreateRandomInt(minItems, maxItems);
+
+      for (var loopCount = 0; loopCount < howMany; loopCount++)
+      {
+        var keyValue = RandomValueGenerator.CreateRandomValue(genericArguments[0]);
+        if (randomDictionary.Contains(keyValue))
+        {
+          continue;
+        }
+
+        var dictionaryValue = RandomValueGenerator.CreateRandomValue(genericArguments[1]);
+
+        randomDictionary.Add(keyValue, dictionaryValue);
+      }
+
+      return randomDictionary;
     }
 
     /// <summary>

@@ -131,5 +131,21 @@ namespace Thuria.Calot.TestUtilities.Tests
       randomDate1.Should().NotBeSameAs(randomDate3);
       randomDate2.Should().NotBeSameAs(randomDate3);
     }
+
+    [TestCase(typeof(Dictionary<string, object>), typeof(Dictionary<string, object>))]
+    [TestCase(typeof(IDictionary<string, object>), typeof(Dictionary<string, object>))]
+    public void CreateRandomValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() =>
+        {
+          var randomValue = RandomValueGenerator.CreateRandomValue(objectType);
+          //---------------Test Result -----------------------
+          randomValue.Should().NotBeNull();
+          randomValue.Should().BeOfType(expectedType);
+        });
+    }
   }
 }
