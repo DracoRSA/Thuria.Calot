@@ -20,7 +20,7 @@ namespace Thuria.Calot.TestUtilities.Tests
                          FakeTestEnum testEnum,
                          IEnumerable<IFakeComplex> allFakes = null,
                          Dictionary<string, string> testDictionary = null,
-                         IDictionary<string, string> testDictionary2 = null)
+                         IDictionary<string, object> testDictionary2 = null)
       : this(testDictionary, testDictionary2)
     {
       Id             = fakeId;
@@ -35,7 +35,7 @@ namespace Thuria.Calot.TestUtilities.Tests
       FakeList       = allFakes;
     }
 
-    public FakeTestClass(Dictionary<string, string> testDictionary = null, IDictionary<string, string> testDictionary2 = null)
+    public FakeTestClass(Dictionary<string, string> testDictionary = null, IDictionary<string, object> testDictionary2 = null)
     {
       TestDictionary = testDictionary ?? throw new ArgumentNullException(nameof(testDictionary));
       TestDictionary2 = testDictionary2 ?? throw new ArgumentNullException(nameof(testDictionary2));
@@ -65,6 +65,6 @@ namespace Thuria.Calot.TestUtilities.Tests
     [FakeTest("TestDictionary", Sequence = 23)]
     public Dictionary<string, string> TestDictionary { get; private set; }
 
-    public IDictionary<string, string> TestDictionary2 { get; private set; }
+    public IDictionary<string, object> TestDictionary2 { get; private set; }
   }
 }

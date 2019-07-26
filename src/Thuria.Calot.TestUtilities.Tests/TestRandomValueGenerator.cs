@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+
 using NUnit.Framework;
 using FluentAssertions;
 
@@ -132,6 +130,7 @@ namespace Thuria.Calot.TestUtilities.Tests
       randomDate2.Should().NotBeSameAs(randomDate3);
     }
 
+    [TestCase(typeof(FakeException), typeof(FakeException))]
     [TestCase(typeof(Dictionary<string, object>), typeof(Dictionary<string, object>))]
     [TestCase(typeof(IDictionary<string, object>), typeof(Dictionary<string, object>))]
     public void CreateRandomValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)

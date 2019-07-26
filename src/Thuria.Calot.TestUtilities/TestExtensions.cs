@@ -37,6 +37,12 @@ namespace Thuria.Calot.TestUtilities
     /// <returns>NSubstitute Mocked object</returns>
     public static object CreateSubstitute(this Type objectType)
     {
+      if (objectType == typeof(Exception))
+      {
+        var exceptionMessage = RandomValueGenerator.CreateRandomString(10, 20);
+        return new Exception(exceptionMessage);
+      }
+
       var constructorInfo       = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).FirstOrDefault();
       var constructorParameters = constructorInfo?.GetParameters();
 
@@ -46,6 +52,11 @@ namespace Thuria.Calot.TestUtilities
       }
 
       var parameterValues = TestHelper.CreateParameterValues(constructorParameters);
+      if (!objectType.IsInterface && objectType.IsClass)
+      {
+        return Activator.CreateInstance(objectType, parameterValues.ToArray());
+      }
+
       return Substitute.For(new[] { objectType }, parameterValues.ToArray());
     }
   }

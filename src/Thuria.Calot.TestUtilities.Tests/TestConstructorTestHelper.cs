@@ -23,7 +23,7 @@ namespace Thuria.Calot.TestUtilities.Tests
     }
 
     [TestCase("TestDictionary", typeof(Dictionary<string, string>))]
-    [TestCase("TestDictionary2", typeof(Dictionary<string, string>))]
+    [TestCase("TestDictionary2", typeof(Dictionary<string, object>))]
     public void ConstructObject_GivenGenericType_ShouldNotThrowExceptionAndConstructObjectWithValuesAsExpected(string propertyName, Type expectedType)
     {
       //---------------Set up test pack-------------------
@@ -118,6 +118,20 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Test Result -----------------------
       testClass.TestDateTime.Should().BeSameDateAs(testDateTime);
       testClass.ComplexObject2.Should().Be(fakeComplex);
+    }
+
+    [Test]
+    public void ConstructObject_GivenException_ShouldConstructObjectAndNotThrowException()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() =>
+        {
+          var fakeException = ConstructorTestHelper.ConstructObject<FakeException>();
+          //---------------Test Result -----------------------
+          fakeException.Should().NotBeNull();
+        });
     }
 
     [Test]
