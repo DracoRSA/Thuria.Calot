@@ -1,6 +1,6 @@
 {
   "name": "thuria.calot",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "Thuria Calot",
   "main": "index.js",
   "scripts": {
