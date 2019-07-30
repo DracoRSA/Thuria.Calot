@@ -66,5 +66,14 @@ namespace Thuria.Calot.TestUtilities.Tests
     public Dictionary<string, string> TestDictionary { get; private set; }
 
     public IDictionary<string, object> TestDictionary2 { get; private set; }
+
+    [FakeTest("TestMethod1", Sequence = 2)]
+    public void TestMethod1(string userName, int userId)
+    {
+    }
+
+    public void TestMethod2(string userName, int userId)
+    {
+    }
   }
 }

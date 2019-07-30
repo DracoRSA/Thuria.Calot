@@ -129,7 +129,8 @@ The Property Test Helper consists of the following helper methods:
 
 * ValidateGetAndSet\<T>(propertyName)
 * ValidateGetAndSet(objectType, propertyName)
-* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType)
+* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
+                                     List<(string propertyName, object propertyValue)> attributePropertyValues = null)
 
 Examples:
 
@@ -162,6 +163,9 @@ MethodTestHelper
 The Method Test Helper consist of the following helper methods:
 
 * ValidateArgumentNullExceptionIfParameterIsNull\<T>(methodName, parameterName, parameterValue)
+* ValidateArgumentNullExceptionIfParameterIsNullAsync\<T>(methodName, parameterName, parameterValue)
+* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
+                                     List<(string propertyName, object propertyValue)> attributePropertyValues = null)
 
 Example(s):
 

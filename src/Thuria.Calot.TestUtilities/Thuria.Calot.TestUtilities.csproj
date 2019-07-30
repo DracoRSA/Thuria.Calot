@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/DracoRSA/Thuria.Calot</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/DracoRSA/Thuria.Calot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>Thuria NUnit TestUtilities</PackageTags>
-    <Version>0.7.2</Version>
+    <Version>0.8.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

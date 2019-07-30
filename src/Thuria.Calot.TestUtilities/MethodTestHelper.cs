@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Text;
 using NUnit.Framework;
 using FluentAssertions;
 
@@ -86,12 +86,81 @@ namespace Thuria.Calot.TestUtilities
       argumentNullException.ParamName.Should().Be(parameterName);
     }
 
+    /// <summary>
+    /// Validate that the method is Decorated with the expected Attribute
+    /// </summary>
+    /// <typeparam name="T">Object Type under test</typeparam>
+    /// <param name="methodName">Object Method Name</param>
+    /// <param name="attributeType">Attribute Type</param>
+    /// <param name="attributePropertyValues">Attribute Property Values</param>
+    public static void ValidateDecoratedWithAttribute<T>(string methodName, Type attributeType,
+                                                         List<(string propertyName, object propertyValue)> attributePropertyValues = null) 
+      where T : class
+    {
+      if (string.IsNullOrWhiteSpace(methodName))
+      {
+        throw new ArgumentNullException(nameof(methodName));
+      }
+
+      if (attributeType == null)
+      {
+        throw new ArgumentNullException(nameof(attributeType));
+      }
+
+      var objectUnderTest = ConstructorTestHelper.ConstructObject<T>();
+      if (objectUnderTest == null)
+      {
+        Assert.Fail($"Failed to create {typeof(T).FullName} to validate Method {methodName} decorated with attribute {attributeType.Name}");
+      }
+
+      var methodInfo = objectUnderTest.GetType().GetMethod(methodName);
+      if (methodInfo == null)
+      {
+        Assert.Fail($"Method [{methodName}] does not exists on {objectUnderTest.GetType().FullName}");
+      }
+
+      var customAttribute = methodInfo.GetCustomAttribute(attributeType);
+      if (customAttribute == null)
+      {
+        Assert.Fail($"Method {methodName} is not decorated with {attributeType.Name} Attribute");
+      }
+
+      if (attributePropertyValues == null)
+      {
+        return;
+      }
+
+      var errorMessage = new StringBuilder();
+      foreach (var (attributePropertyName, attributePropertyValue) in attributePropertyValues)
+      {
+        var attributePropertyInfo = attributeType.GetProperty(attributePropertyName);
+        if (attributePropertyInfo == null)
+        {
+          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                  $"but the attribute property {attributePropertyName} does not exist on the attribute");
+          continue;
+        }
+
+        var propertyValue = attributePropertyInfo.GetValue(customAttribute);
+        if (!propertyValue.Equals(attributePropertyValue))
+        {
+          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                  $"but the attribute property {attributePropertyName} is not set to {attributePropertyValue}");
+        }
+      }
+
+      if (errorMessage.Length > 0)
+      {
+        Assert.Fail(errorMessage.ToString());
+      }
+    }
+
     private static MethodInfo GetMethodInformation<T>(string methodName, string parameterName)
     {
       var allMethodInfos = typeof(T).GetMethods().Where(info => info.Name == methodName).ToList();
       if (allMethodInfos == null || !allMethodInfos.Any())
       {
-        throw new InvalidOperationException($"Method [{methodName}] does not exists on {typeof(T).FullName}");
+        Assert.Fail($"Method [{methodName}] does not exists on {typeof(T).FullName}");
       }
 
       MethodInfo methodInfo = null;

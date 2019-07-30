@@ -65,21 +65,26 @@ namespace Thuria.Calot.TestUtilities
                                                          List<(string propertyName, object propertyValue)> attributePropertyValues = null)
       where T : class
     {
-      var objectUnderTest = ConstructorTestHelper.ConstructObject<T>();
-      if (objectUnderTest == null)
-      {
-        Assert.Fail($"Failed to create {typeof(T).FullName} to test Property Get and Set for {propertyName}");
-      }
-
       if (propertyName == null)
       {
         throw new ArgumentNullException(nameof(propertyName));
       }
 
+      if (attributeType == null)
+      {
+        throw new ArgumentNullException(nameof(attributeType));
+      }
+
+      var objectUnderTest = ConstructorTestHelper.ConstructObject<T>();
+      if (objectUnderTest == null)
+      {
+        Assert.Fail($"Failed to create {typeof(T).FullName} to test Property {propertyName} decorated with {attributeType.Name}");
+      }
+
       var propertyInfo = objectUnderTest.GetType().GetProperty(propertyName);
       if (propertyInfo == null)
       {
-        throw new InvalidOperationException($"Property [{propertyName}] does not exists on {objectUnderTest.GetType().FullName}");
+        Assert.Fail($"Property [{propertyName}] does not exists on {objectUnderTest.GetType().FullName}");
       }
 
       var customAttribute = propertyInfo.GetCustomAttribute(attributeType);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace Thuria.Calot.TestUtilities.Tests
@@ -27,6 +28,84 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Execute Test ----------------------
       MethodTestHelper.ValidateArgumentNullExceptionIfParameterIsNullAsync<FakeMethodTest>("TestMethodAsync", "nonNullParameter");
       //---------------Test Result -----------------------
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenNullMethodName_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<ArgumentNullException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeMethodTest>(null, typeof(FakeTestAttribute)));
+      //---------------Test Result -----------------------
+      exception.ParamName.Should().Be("methodName");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenNullAttributeType_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<ArgumentNullException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeMethodTest>("OverloadedMethod", null));
+      //---------------Test Result -----------------------
+      exception.ParamName.Should().Be("attributeType");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMethodDecoratedWithAttribute_ShouldPassTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>("TestMethod1", typeof(FakeTestAttribute));
+      //---------------Test Result -----------------------
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMethodDecoratedWithAttribute_And_AttributeParametersMatch_ShouldPassTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>("TestMethod1", typeof(FakeTestAttribute),
+                                                                     new List<(string propertyName, object propertyValue)>
+                                                                       {
+                                                                         ("PropertyName", "TestMethod1"), ("Sequence", 2)
+                                                                       });
+      //---------------Test Result -----------------------
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMethodDecoratedWithAttribute_And_AttributeParametersDoNotMatch_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var methodName    = "TestMethod1";
+      var attributeType = typeof(FakeTestAttribute);
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>(methodName, attributeType, 
+                                                                                                                             new List<(string propertyName, object propertyValue)>
+                                                                                                                               {
+                                                                                                                                 ("PropertyName", "TestMethod2"),
+                                                                                                                                 ("Sequence", 1)
+                                                                                                                               }));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Contain($"{methodName} Method is decorated with {attributeType.Name} but the attribute property PropertyName is not set to TestMethod2");
+      exception.Message.Should().Contain($"{methodName} Method is decorated with {attributeType.Name} but the attribute property Sequence is not set to 1");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMethodNotDecoratedWithAttribute_ShouldPassTest()
+    {
+      //---------------Set up test pack-------------------
+      var methodName    = "TestMethod2";
+      var attributeType = typeof(FakeTestAttribute);
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>(methodName, attributeType));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Be($"Method {methodName} is not decorated with {attributeType.Name} Attribute");
     }
 
     private class FakeMethodTest
