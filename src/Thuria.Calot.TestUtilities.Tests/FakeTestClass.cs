@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {
@@ -51,6 +54,8 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     public DateTime TestDateTime { get; private set; }
 
+    [Required]
+    [JsonProperty(Required = Required.Always)]
     public FakeComplex ComplexObject1 { get; private set; }
 
     [FakeTest("ComplexObject2")]

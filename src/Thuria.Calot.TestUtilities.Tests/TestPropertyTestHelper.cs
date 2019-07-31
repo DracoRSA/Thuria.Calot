@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
+using System.ComponentModel.DataAnnotations;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {
@@ -24,6 +24,7 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     [TestCase("ComplexObject2", typeof(FakeTestAttribute))]
     [TestCase("TestDictionary", typeof(FakeTestAttribute))]
+    [TestCase("ComplexObject1", typeof(RequiredAttribute))]
     public void ValidateDecoratedWithAttribute_GivenPropertyDecorated_ShouldPassTest(string propertyName, Type attributeType)
     {
       //---------------Set up test pack-------------------

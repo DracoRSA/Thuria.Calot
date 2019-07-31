@@ -146,5 +146,23 @@ namespace Thuria.Calot.TestUtilities.Tests
           randomValue.Should().BeOfType(expectedType);
         });
     }
+
+    [TestCase(typeof(bool?), typeof(bool))]
+    [TestCase(typeof(int?), typeof(int))]
+    [TestCase(typeof(decimal?), typeof(decimal))]
+    [TestCase(typeof(DateTime?), typeof(DateTime))]
+    public void CreateRandomNullableValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() =>
+        {
+          var randomValue = RandomValueGenerator.CreateRandomValue(objectType);
+          //---------------Test Result -----------------------
+          randomValue.Should().NotBeNull();
+          randomValue.Should().BeOfType(expectedType);
+        });
+    }
   }
 }

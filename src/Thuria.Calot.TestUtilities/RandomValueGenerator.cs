@@ -22,19 +22,24 @@ namespace Thuria.Calot.TestUtilities
     private static readonly Dictionary<Type, Func<object>> RandomValueGenerators = new Dictionary<Type, Func<object>>
       {
         { typeof(bool), () => CreateRandomBoolean() },
+        { typeof(bool?), () => (bool?)CreateRandomBoolean() },
         { typeof(ushort), () => CreateRandomUShort() },
         { typeof(uint), () => CreateRandomUInt() },
         { typeof(ulong), () => CreateRandomULong() },
         { typeof(short), () => CreateRandomInt() },
         { typeof(int), () => CreateRandomInt() },
+        { typeof(int?), () => (int?)CreateRandomInt() },
         { typeof(long), () => CreateRandomLong() },
+        { typeof(decimal), () => CreateRandomDecimal() },
+        { typeof(decimal?), () => (decimal?) CreateRandomDecimal() },
         { typeof(double), () => CreateRandomDouble() },
         { typeof(string), () => CreateRandomString() },
         { typeof(byte), () => CreateRandomBytes(1)[0] },
         { typeof(byte[]), () => CreateRandomBytes(CreateRandomInt(1, 25)) },
         { typeof(Guid), () => Guid.NewGuid()  },
         { typeof(object), () => new object() },
-        { typeof(DateTime), () => CreateRandomDate() }
+        { typeof(DateTime), () => CreateRandomDate() },
+        { typeof(DateTime?), () => (DateTime?) CreateRandomDate() }
       };
 
     /// <summary>
@@ -60,10 +65,13 @@ namespace Thuria.Calot.TestUtilities
     {
       if (objectType == typeof(Type)) { return objectType; }
 
-      var randomType = objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Nullable<>)
-                            ? Nullable.GetUnderlyingType(objectType)
-                            : objectType;
+      if (objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Nullable<>))
+      {
+        var underlyingType = Nullable.GetUnderlyingType(objectType);
+        return RandomValueGenerator.CreateRandomValue(underlyingType);
+      }
 
+      var randomType     = objectType;
       var valueGenerator = RandomValueGenerators.FirstOrDefault(pair => pair.Key == randomType);
       if (valueGenerator.Value != null)
       {
@@ -211,6 +219,20 @@ namespace Thuria.Calot.TestUtilities
       double range = maximumValue - minimumValue + 1;
 
       return (double)(minimumValue + (range * randomNumber));
+    }
+
+    /// <summary>
+    /// Create Random Decimal
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random decimal value</returns>
+    public static decimal CreateRandomDecimal(long minimumValue = long.MinValue, long maximumValue = long.MaxValue)
+    {
+      decimal randomNumber = CreateRandomNumber((int)minimumValue, (int)maximumValue);
+      decimal range        = maximumValue - minimumValue + 1;
+
+      return (minimumValue + (range * randomNumber));
     }
 
     /// <summary>
