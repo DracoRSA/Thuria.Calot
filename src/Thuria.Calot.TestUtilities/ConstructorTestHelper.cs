@@ -102,6 +102,35 @@ namespace Thuria.Calot.TestUtilities
     }
 
     /// <summary>
+    /// Validate that the specified Exception is thrown if the specified parameter value is null
+    /// </summary>
+    /// <typeparam name="T">Object to test</typeparam>
+    /// <typeparam name="TException">Exception expected to be thrown</typeparam>
+    /// <param name="parameterName">Parameter Name to test</param>
+    /// <param name="constructorParams">Optional Constructor Parameters</param>
+    public static void ValidateExceptionIsThrownIfParameterIsNull<T, TException>(string parameterName,
+                                                                                 params (string parameterName, object ParameterValue)[] constructorParams)
+      where T : class
+      where TException : Exception
+    {
+      try
+      {
+        ConstructObject<T>(parameterName, constructorParams: constructorParams);
+        Assert.Fail($"{typeof(TException).Name} Exception not throw for Constructor Parameter [{parameterName}] on {typeof(T).FullName}");
+      }
+      catch (TargetInvocationException invocationException)
+      {
+        var thrownException = (TException) invocationException.InnerException;
+        if (thrownException == null)
+        {
+          Assert.Fail($"{typeof(TException).Name} Exception not throw for Constructor Parameter [{parameterName}] on {typeof(T).FullName}");
+        }
+
+        thrownException.Message.Should().Contain(parameterName);
+      }
+    }
+
+    /// <summary>
     /// Validate that a property is set with the value given during the constructing of the object
     /// </summary>
     /// <typeparam name="T"></typeparam>

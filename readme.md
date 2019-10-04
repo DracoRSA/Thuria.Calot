@@ -25,6 +25,7 @@ The Constructor Test Helper consists of the following helper methods:
 
 * ConstructObject\<T>(parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
 * ConstructObject(objectType, parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
+* ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(parameterName, params (string parameterName, object parameterValue)[] constructorParams)
 * ValidateArgumentNullExceptionIfParameterIsNull\<T>(parameterName, params (string parameterName, object parameterValue)[] constructorParams)
 * ValidatePropertySetWithParameter\<T>(parameterName, propertyName)
 
@@ -42,6 +43,16 @@ Examples:
       //---------------Test Result -----------------------
     }
 
+    [TestCase("columnName")]
+    [TestCase("parameterName")]
+    public void Constructor_GivenNullParameter_ShouldThrowException(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<ColumnModel, ArgumentNullException>(parameterName);
+      //---------------Test Result -----------------------
+    }
 >
     [TestCase("connectionString", "ConnectionString")]
     [TestCase("dbConnection", "DbConnection")]
@@ -109,6 +120,26 @@ Examples:
       exception.Message.Should().Contain($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
     }
 
+    [Test]
+    public void ValidateExceptionIsThrownIfParameterIsNull_GivenParameterValuesAndExceptionNotThrown_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var parameterName = "notSetParameter";
+      var testDateTime  = DateTime.Now;
+      var fakeComplex   = new FakeComplex();
+
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName, 
+                                                                                                                                                  parameterValues.ToArray()));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Contain($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
+    }
+
     [TestCase("testName")]
     [TestCase("complexObject")]
     [TestCase("complexInterface")]
@@ -164,6 +195,8 @@ The Method Test Helper consist of the following helper methods:
 
 * ValidateArgumentNullExceptionIfParameterIsNull\<T>(methodName, parameterName, parameterValue)
 * ValidateArgumentNullExceptionIfParameterIsNullAsync\<T>(methodName, parameterName, parameterValue)
+* ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(methodName, parameterName, parameterValue)
+* ValidateExceptionIsThrownIfParameterIsNullAsync\<T, TException>(methodName, parameterName, parameterValue)
 * ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
                                      List<(string propertyName, object propertyValue)> attributePropertyValues = null)
 
@@ -181,6 +214,16 @@ Example(s):
       //---------------Test Result -----------------------
     }
 
+    [TestCase("UnRegister", "connectionString")]
+    [TestCase("Get", "connectionString")]
+    public void Methods_GivenNullParameter_ShouldThrowException(string methodName, string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNull<DatabaseContext, ArgumentNullException>(methodName, parameterName);
+      //---------------Test Result -----------------------
+    }
 ---
 RandomValueGenerator
 ---

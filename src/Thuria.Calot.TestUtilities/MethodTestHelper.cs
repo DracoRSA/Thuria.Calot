@@ -48,6 +48,42 @@ namespace Thuria.Calot.TestUtilities
     }
 
     /// <summary>
+    /// Validate that if a specified argument value is null, that a specified exception is thrown on an Async method
+    /// </summary>
+    /// <typeparam name="T">Type under test</typeparam>
+    /// <typeparam name="TException">Exception expected to be thrown</typeparam>
+    /// <param name="methodName">Method to be test</param>
+    /// <param name="parameterName">Method Parameter Name to verify</param>
+    /// <param name="parameterValue">Parameter Value (Default null)</param>
+    public static void ValidateExceptionIsThrownIfParameterIsNullAsync<T, TException>(string methodName, string parameterName, object parameterValue = null)
+      where TException : Exception
+    {
+      if (methodName == null) { throw new ArgumentNullException(nameof(methodName)); }
+      if (parameterName == null) { throw new ArgumentNullException(nameof(parameterName)); }
+
+      var methodInfo = GetMethodInformation<T>(methodName, parameterName);
+      var methodParameters = methodInfo.GetParameters();
+      var methodParameterValues = new List<object>();
+
+      foreach (var currentParameter in methodParameters)
+      {
+        if (!string.IsNullOrWhiteSpace(parameterName) && currentParameter.Name == parameterName)
+        {
+          methodParameterValues.Add(parameterValue);
+          continue;
+        }
+
+        methodParameterValues.Add(currentParameter.CreateRandomValue());
+      }
+
+      var constructedObject     = ConstructorTestHelper.ConstructObject(typeof(T));
+      var argumentNullException = Assert.ThrowsAsync(typeof(TException), 
+                                                     () => (Task)methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()),
+                                                     $"{typeof(TException).Namespace} Exception not throw for Method [{methodName}] Parameter [{parameterName}] on {typeof(T).FullName}");
+      argumentNullException.Message.Should().Contain(parameterName);
+    }
+
+    /// <summary>
     /// Validate that if a specified argument value is null, that a ArgumentNullException is thrown
     /// </summary>
     /// <typeparam name="T">Type under test</typeparam>
@@ -84,6 +120,47 @@ namespace Thuria.Calot.TestUtilities
       }
 
       argumentNullException.ParamName.Should().Be(parameterName);
+    }
+
+    /// <summary>
+    /// Validate that if a specified argument value is null, that a specified exception is thrown
+    /// </summary>
+    /// <typeparam name="T">Type under test</typeparam>
+    /// <typeparam name="TException">Exception expected to be thrown</typeparam>
+    /// <param name="methodName">Method to be test</param>
+    /// <param name="parameterName">Method Parameter Name to verify</param>
+    /// <param name="parameterValue">Parameter Value (Default null)</param>
+    public static void ValidateExceptionIsThrownIfParameterIsNull<T, TException>(string methodName, string parameterName, object parameterValue = null)
+      where TException : Exception
+    {
+      if (methodName == null) { throw new ArgumentNullException(nameof(methodName)); }
+      if (parameterName == null) { throw new ArgumentNullException(nameof(parameterName)); }
+
+      var methodInfo            = GetMethodInformation<T>(methodName, parameterName);
+      var methodParameters      = methodInfo.GetParameters();
+      var methodParameterValues = new List<object>();
+
+      foreach (var currentParameter in methodParameters)
+      {
+        if (!string.IsNullOrWhiteSpace(parameterName) && currentParameter.Name == parameterName)
+        {
+          methodParameterValues.Add(parameterValue);
+          continue;
+        }
+
+        methodParameterValues.Add(currentParameter.CreateRandomValue());
+      }
+
+      var constructedObject   = ConstructorTestHelper.ConstructObject(typeof(T));
+      var invocationException = Assert.Throws<TargetInvocationException>(() => methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()));
+
+      var argumentNullException = (invocationException.InnerException as TException);
+      if (argumentNullException == null)
+      {
+        Assert.Fail($"{typeof(TException).Name} Exception not throw for Method [{methodName}] Parameter [{parameterName}] on {typeof(T).FullName}");
+      }
+
+      argumentNullException.Message.Should().Contain(parameterName);
     }
 
     /// <summary>

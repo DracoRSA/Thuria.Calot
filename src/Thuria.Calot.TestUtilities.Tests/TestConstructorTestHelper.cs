@@ -216,5 +216,51 @@ namespace Thuria.Calot.TestUtilities.Tests
       Assert.DoesNotThrow(() => ConstructorTestHelper.ValidatePropertySetWithParameter<FakeTestClass>(parameterName, propertyName));
       //---------------Test Result -----------------------
     }
+
+    [TestCase("testName")]
+    [TestCase("complexObject")]
+    [TestCase("complexInterface")]
+    [TestCase("testDictionary")]
+    [TestCase("testDictionary2")]
+    public void ValidateExceptionIsThrownIfParameterIsNull_GivenParameterWhereExceptionIsThrown_ShouldPassTest(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName));
+      //---------------Test Result -----------------------
+    }
+
+    [Test]
+    public void ValidateExceptionIsThrownIfParameterIsNull_GivenParameterValuesAndExceptionNotThrown_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var parameterName = "notSetParameter";
+      var testDateTime = DateTime.Now;
+      var fakeComplex = new FakeComplex();
+    
+      var parameterValues = new List<(string paramName, object paramValue)>
+        {
+          ("testDateTime", testDateTime), ("complexObject", fakeComplex)
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName,
+                                                                                                                                                  parameterValues.ToArray()));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Contain($"ArgumentNullException Exception not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
+    }
+    
+    [TestCase("testName")]
+    [TestCase("complexObject")]
+    [TestCase("complexInterface")]
+    public void ValidateExceptionIsThrownIfParameterIsNull_GivenParameterWhereExceptionIsThrownAndParameterValues_ShouldPassTest(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName, ("testDateTime", DateTime.Now)));
+      //---------------Test Result -----------------------
+    }
   }
 }

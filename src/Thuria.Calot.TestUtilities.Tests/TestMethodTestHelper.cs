@@ -30,6 +30,27 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Test Result -----------------------
     }
 
+    [TestCase("testData")]
+    [TestCase("testObjectList")]
+    public void ValidateExceptionIsThrownIfParameterIsNull_GivenOverloadedMethods_ShouldTestMethodWithParameterNameMatch(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeMethodTest, ArgumentNullException>("OverloadedMethod", parameterName);
+      //---------------Test Result -----------------------
+    }
+    
+    [Test]
+    public void ValidateExceptionIsThrownIfParameterIsNullAsync_GivenNullParameter_ShouldDetectArgumentNullException()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNullAsync<FakeMethodTest, ArgumentNullException>("TestMethodAsync", "nonNullParameter");
+      //---------------Test Result -----------------------
+    }
+
     [Test]
     public void ValidateDecoratedWithAttribute_GivenNullMethodName_ShouldFailTest()
     {
