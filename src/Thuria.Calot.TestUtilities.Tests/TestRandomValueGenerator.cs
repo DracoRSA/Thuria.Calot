@@ -149,6 +149,8 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     [TestCase(typeof(bool?), typeof(bool))]
     [TestCase(typeof(int?), typeof(int))]
+    [TestCase(typeof(ushort), typeof(ushort))]
+    [TestCase(typeof(short), typeof(short))]
     [TestCase(typeof(decimal?), typeof(decimal))]
     [TestCase(typeof(DateTime?), typeof(DateTime))]
     public void CreateRandomNullableValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)

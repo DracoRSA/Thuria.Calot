@@ -24,9 +24,9 @@ namespace Thuria.Calot.TestUtilities
         { typeof(bool), () => CreateRandomBoolean() },
         { typeof(bool?), () => (bool?)CreateRandomBoolean() },
         { typeof(ushort), () => CreateRandomUShort() },
+        { typeof(short), () => CreateRandomShort() },
         { typeof(uint), () => CreateRandomUInt() },
         { typeof(ulong), () => CreateRandomULong() },
-        { typeof(short), () => CreateRandomInt() },
         { typeof(int), () => CreateRandomInt() },
         { typeof(int?), () => (int?)CreateRandomInt() },
         { typeof(long), () => CreateRandomLong() },
@@ -158,9 +158,20 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="minimumValue">Minimum Value (Optional)</param>
     /// <param name="maximumValue">Maximum Value (Optional)</param>
     /// <returns>Random ushort value</returns>
-    public static ushort CreateRandomUShort(ushort minimumValue = ushort.MinValue, ushort maximumValue = ushort.MaxValue)
+    public static ushort CreateRandomUShort(short minimumValue = short.MinValue, short maximumValue = short.MaxValue)
     {
-      return (ushort)CreateRandomLong((int)minimumValue, (int)maximumValue);
+      return (ushort)CreateRandomLong(minimumValue, maximumValue);
+    }
+
+    /// <summary>
+    /// Create Random ushort
+    /// </summary>
+    /// <param name="minimumValue">Minimum Value (Optional)</param>
+    /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <returns>Random ushort value</returns>
+    public static short CreateRandomShort(ushort minimumValue = ushort.MinValue, ushort maximumValue = ushort.MaxValue)
+    {
+      return (short)CreateRandomLong(minimumValue, maximumValue);
     }
 
     /// <summary>
