@@ -268,5 +268,6 @@ TestHelper
 The Test Helper contains generic test helper methods that can be used in tests.
 
 * **CreateParameterValues** - Generate random values for a list of parameters
+* **CreateSubstituteDataReader<T>** - Create a Substitute Data Reader with the specified behaviour
 
 ---

@@ -15,6 +15,10 @@ namespace Thuria.Calot.TestUtilities.Tests
 
   public class FakeTestClass
   {
+    public FakeTestClass()
+    {
+    }
+
     public FakeTestClass(Guid fakeId, string testName, int testIntValue, bool isActive, 
                          // ReSharper disable once UnusedParameter.Local
                          string notSetParameter,
