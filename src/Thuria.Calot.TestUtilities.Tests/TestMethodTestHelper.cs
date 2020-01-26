@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentAssertions;
+using System.Collections.Generic;
+
 using NUnit.Framework;
+using FluentAssertions;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {

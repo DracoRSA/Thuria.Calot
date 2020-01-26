@@ -41,9 +41,9 @@ namespace Thuria.Calot.TestUtilities
         methodParameterValues.Add(currentParameter.CreateRandomValue());
       }
 
-      var constructedObject     = ConstructorTestHelper.ConstructObject(typeof(T));
-      var argumentNullException = Assert.ThrowsAsync<ArgumentNullException>(() => (Task)methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()),
-                                                                          $"ArgumentNullException not throw for Method [{methodName}] Parameter [{parameterName}] on {typeof(T).FullName}");
+      var constructedObject   = ConstructorTestHelper.ConstructObject(typeof(T));
+      var argumentNullException = Assert.ThrowsAsync<ArgumentNullException>(async () => await (Task)methodInfo.Invoke(constructedObject, methodParameterValues.ToArray()),
+                                                                          $"No Exception not throw for Method [{methodName}] Parameter [{parameterName}] on {typeof(T).FullName}");
       argumentNullException.ParamName.Should().Be(parameterName);
     }
 
