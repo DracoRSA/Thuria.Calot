@@ -196,8 +196,8 @@ namespace Thuria.Calot.TestUtilities
         Assert.Fail($"Method [{methodName}] does not exists on {objectUnderTest.GetType().FullName}");
       }
 
-      var customAttribute = methodInfo.GetCustomAttribute(attributeType);
-      if (customAttribute == null)
+      var customAttributes = methodInfo.GetCustomAttributes(attributeType);
+      if (customAttributes == null || !customAttributes.Any())
       {
         Assert.Fail($"Method {methodName} is not decorated with {attributeType.Name} Attribute");
       }
@@ -208,28 +208,33 @@ namespace Thuria.Calot.TestUtilities
       }
 
       var errorMessage = new StringBuilder();
-      foreach (var (attributePropertyName, attributePropertyValue) in attributePropertyValues)
+      foreach (var currentCustomAttribute in customAttributes)
       {
-        var attributePropertyInfo = attributeType.GetProperty(attributePropertyName);
-        if (attributePropertyInfo == null)
+        foreach (var (attributePropertyName, attributePropertyValue) in attributePropertyValues)
         {
-          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
-                                  $"but the attribute property {attributePropertyName} does not exist on the attribute");
-          continue;
+          var attributePropertyInfo = attributeType.GetProperty(attributePropertyName);
+          if (attributePropertyInfo == null)
+          {
+            errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                    $"but the attribute property {attributePropertyName} does not exist on the attribute");
+            continue;
+          }
+
+          var propertyValue = attributePropertyInfo.GetValue(currentCustomAttribute);
+          if (!propertyValue.Equals(attributePropertyValue))
+          {
+            errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                    $"but the attribute property {attributePropertyName} is not set to {attributePropertyValue}");
+          }
         }
 
-        var propertyValue = attributePropertyInfo.GetValue(customAttribute);
-        if (!propertyValue.Equals(attributePropertyValue))
+        if (errorMessage.Length == 0)
         {
-          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
-                                  $"but the attribute property {attributePropertyName} is not set to {attributePropertyValue}");
+          return;
         }
       }
 
-      if (errorMessage.Length > 0)
-      {
-        Assert.Fail(errorMessage.ToString());
-      }
+      Assert.Fail(errorMessage.ToString());
     }
 
     private static MethodInfo GetMethodInformation<T>(string methodName, string parameterName)
