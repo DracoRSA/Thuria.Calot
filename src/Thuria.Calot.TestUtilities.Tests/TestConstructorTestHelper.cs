@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 using FluentAssertions;
+using Thuria.Calot.TestUtilities.Tests.Fake;
 using Thuria.Zitidar.Extensions;
 
 namespace Thuria.Calot.TestUtilities.Tests
@@ -189,6 +190,17 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass>(parameterName, ("testDateTime", DateTime.Now)));
+      //---------------Test Result -----------------------
+    }
+
+    [TestCase("fakeComplex")]
+    [TestCase("fakeComplex2")]
+    public void ValidateArgumentNullExceptionIfParameterIsNull_GivenBaseClass_And_ExceptionIsThrown_ShouldPassTest(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull<FakeTestClass2>(parameterName));
       //---------------Test Result -----------------------
     }
 

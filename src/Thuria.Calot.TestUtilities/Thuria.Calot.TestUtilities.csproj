@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>D:\Draco\Thuria.Calot\src\Thuria.Calot.TestUtilities\Thuria.Calot.TestUtilities.xml</DocumentationFile>
+    <DocumentationFile>Thuria.Calot.TestUtilities.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
