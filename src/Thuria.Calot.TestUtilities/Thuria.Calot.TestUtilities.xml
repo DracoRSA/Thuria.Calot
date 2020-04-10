@@ -9,30 +9,42 @@
             Constructor Test Helper Methods
             </summary>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject``1(System.String,System.Object)">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject``1(System.String,System.Object,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Helper method to construct any object and create default parameters as necessary
             </summary>
             <typeparam name="T">Object Type to be Constructed</typeparam>
             <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
             <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+            <param name="constructorParams">Optional Constructor Parameters</param>
             <returns>Newly constructed object</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject(System.Type,System.String,System.Object)">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject(System.Type,System.String,System.Object,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Helper method to construct any object and create default parameters as necessary
             </summary>
             <param name="objectType">Object Type to be Constructed</param>
             <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
             <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+            <param name="constructorParams">Optional Constructor Parameters</param>
             <returns>Newly constructed object</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull``1(System.String)">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidateArgumentNullExceptionIfParameterIsNull``1(System.String,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Validate that when a null parameter is given to a constructor, an ArgumentNullException is thrown
             </summary>
             <typeparam name="T">Object Type to test</typeparam>
             <param name="parameterName">Parameter Name to test</param>
+            <param name="constructorParams">Optional Constructor Parameters</param>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull``2(System.String,System.ValueTuple{System.String,System.Object}[])">
+            <summary>
+            Validate that the specified Exception is thrown if the specified parameter value is null
+            </summary>
+            <typeparam name="T">Object to test</typeparam>
+            <typeparam name="TException">Exception expected to be thrown</typeparam>
+            <param name="parameterName">Parameter Name to test</param>
+            <param name="constructorParams">Optional Constructor Parameters</param>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidatePropertySetWithParameter``1(System.String,System.String)">
             <summary>
@@ -56,6 +68,16 @@
             <param name="parameterName">Method Parameter Name to verify</param>
             <param name="parameterValue">Parameter Value (Default null)</param>
         </member>
+        <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNullAsync``2(System.String,System.String,System.Object)">
+            <summary>
+            Validate that if a specified argument value is null, that a specified exception is thrown on an Async method
+            </summary>
+            <typeparam name="T">Type under test</typeparam>
+            <typeparam name="TException">Exception expected to be thrown</typeparam>
+            <param name="methodName">Method to be test</param>
+            <param name="parameterName">Method Parameter Name to verify</param>
+            <param name="parameterValue">Parameter Value (Default null)</param>
+        </member>
         <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateArgumentNullExceptionIfParameterIsNull``1(System.String,System.String,System.Object)">
             <summary>
             Validate that if a specified argument value is null, that a ArgumentNullException is thrown
@@ -65,17 +87,24 @@
             <param name="parameterName">Method Parameter Name to verify</param>
             <param name="parameterValue">Parameter Value (Default null)</param>
         </member>
-        <member name="T:Thuria.Calot.TestUtilities.MockExtensions">
+        <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNull``2(System.String,System.String,System.Object)">
             <summary>
-            Moq Extensions
+            Validate that if a specified argument value is null, that a specified exception is thrown
             </summary>
+            <typeparam name="T">Type under test</typeparam>
+            <typeparam name="TException">Exception expected to be thrown</typeparam>
+            <param name="methodName">Method to be test</param>
+            <param name="parameterName">Method Parameter Name to verify</param>
+            <param name="parameterValue">Parameter Value (Default null)</param>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.MockExtensions.MockAs(System.Type)">
+        <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateDecoratedWithAttribute``1(System.String,System.Type,System.Collections.Generic.List{System.ValueTuple{System.String,System.Object}})">
             <summary>
-            Create a Mock object from a type (For some reason not supported by Moq)
+            Validate that the method is Decorated with the expected Attribute
             </summary>
-            <param name="objectTypeToMock"></param>
-            <returns>Mocked object</returns>
+            <typeparam name="T">Object Type under test</typeparam>
+            <param name="methodName">Object Method Name</param>
+            <param name="attributeType">Attribute Type</param>
+            <param name="attributePropertyValues">Attribute Property Values</param>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.PropertyTestHelper">
             <summary>
@@ -95,6 +124,15 @@
             </summary>
             <param name="objectUnderTest"></param>
             <param name="propertyName"></param>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.PropertyTestHelper.ValidateDecoratedWithAttribute``1(System.String,System.Type,System.Collections.Generic.List{System.ValueTuple{System.String,System.Object}})">
+            <summary>
+            Validate that a property has been decorated with a specified Attribute
+            </summary>
+            <typeparam name="T">Object Type under test</typeparam>
+            <param name="propertyName">Object Property Name</param>
+            <param name="attributeType">Attribute Type</param>
+            <param name="attributePropertyValues">Attribute Property Values</param>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.RandomValueGenerator">
             <summary>
@@ -131,6 +169,22 @@
             </summary>
             <returns>Random boolean value</returns>
         </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomUShort(System.Int16,System.Int16)">
+            <summary>
+            Create Random ushort
+            </summary>
+            <param name="minimumValue">Minimum Value (Optional)</param>
+            <param name="maximumValue">Maximum Value (Optional)</param>
+            <returns>Random ushort value</returns>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomShort(System.UInt16,System.UInt16)">
+            <summary>
+            Create Random ushort
+            </summary>
+            <param name="minimumValue">Minimum Value (Optional)</param>
+            <param name="maximumValue">Maximum Value (Optional)</param>
+            <returns>Random ushort value</returns>
+        </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomUInt(System.UInt32,System.UInt32)">
             <summary>
             Create Random uint
@@ -138,6 +192,14 @@
             <param name="minimumValue">Minimum Value (Optional)</param>
             <param name="maximumValue">Maximum Value (Optional)</param>
             <returns>Random uint value</returns>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomULong(System.UInt64,System.UInt64)">
+            <summary>
+            Create Random ulong
+            </summary>
+            <param name="minimumValue">Minimum Value (Optional)</param>
+            <param name="maximumValue">Maximum Value (Optional)</param>
+            <returns>Random ulong value</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomInt(System.Int32,System.Int32)">
             <summary>
@@ -163,6 +225,14 @@
             <param name="maximumValue">Maximum Value (Optional)</param>
             <returns>Random double value</returns>
         </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomDecimal(System.Int64,System.Int64)">
+            <summary>
+            Create Random Decimal
+            </summary>
+            <param name="minimumValue">Minimum Value (Optional)</param>
+            <param name="maximumValue">Maximum Value (Optional)</param>
+            <returns>Random decimal value</returns>
+        </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomBytes(System.Int32)">
             <summary>
             Create Random Bytes
@@ -185,6 +255,15 @@
             <param name="items"></param>
             <returns></returns>
         </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomList(System.Type,System.Int32,System.Int32)">
+            <summary>
+            Create List of Random values
+            </summary>
+            <param name="genericCollectionType">List Type</param>
+            <param name="minItems">Minimum number of items (Optional)</param>
+            <param name="maxItems">Maximum number of items (Optional)</param>
+            <returns>A Collection of Random values of the specified type</returns>
+        </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomCollection(System.Type,System.Int32,System.Int32)">
             <summary>
             Create Collection of Random values
@@ -194,7 +273,7 @@
             <param name="maxItems">Maximum number of items (Optional)</param>
             <returns>A Collection of Random values of the specified type</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomDictionary">
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomDictionary(System.Type,System.Int32,System.Int32)">
             <summary>
             Create Random Dictionary
             </summary>
@@ -261,6 +340,16 @@
             <param name="allParameters">List of Parameters</param>
             <param name="nullParameterName">Parameter that should be null</param>
             <returns>List of random generated parameter values</returns>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.TestHelper.CreateSubstituteDataReader``1(System.Collections.Generic.List{``0},System.Collections.Generic.Dictionary{System.String,System.Object},System.Type)">
+            <summary>
+            Create Substitute Data Reader
+            </summary>
+            <typeparam name="T">Data Reader Data Type</typeparam>
+            <param name="dataReaderData">Data Reader Data</param>
+            <param name="additionalColumnValues">Additional Column Values (Optional)</param>
+            <param name="customColumnAttribute">Custom Column Attribute to verify the Column Name with (Optional [Property - DbColumnName])</param>
+            <returns>A mocked (NSubstitute) IDataReader object</returns>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.ThreadLocalRandom">
             <summary> 

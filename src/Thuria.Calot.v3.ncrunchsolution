@@ -3,6 +3,9 @@
     <AllowParallelTestExecution>True</AllowParallelTestExecution>
     <MetricsExclusionList>
       <Value>Thuria.Calot.TestUtilities.Tests\Thuria.Calot.TestUtilities.Tests.csproj</Value>
+      <Value>Thuria.Calot.TestUtilities\Thuria.Calot.TestUtilities.csproj:net461</Value>
+      <Value>Thuria.Calot.TestUtilities\Thuria.Calot.TestUtilities.csproj:net472</Value>
+      <Value>Thuria.Calot.TestUtilities\Thuria.Calot.TestUtilities.csproj:net48</Value>
     </MetricsExclusionList>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>

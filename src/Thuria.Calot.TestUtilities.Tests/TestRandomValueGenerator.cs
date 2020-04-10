@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using NUnit.Framework;
 using FluentAssertions;
@@ -130,9 +131,18 @@ namespace Thuria.Calot.TestUtilities.Tests
       randomDate2.Should().NotBeSameAs(randomDate3);
     }
 
+    [TestCase(typeof(uint), typeof(uint))]
+    [TestCase(typeof(short), typeof(short))]
+    [TestCase(typeof(ushort), typeof(ushort))]
+    [TestCase(typeof(long), typeof(long))]
+    [TestCase(typeof(ulong), typeof(ulong))]
+    [TestCase(typeof(double), typeof(double))]
+    [TestCase(typeof(byte), typeof(byte))]
+    [TestCase(typeof(byte[]), typeof(byte[]))]
     [TestCase(typeof(FakeException), typeof(FakeException))]
     [TestCase(typeof(Dictionary<string, object>), typeof(Dictionary<string, object>))]
     [TestCase(typeof(IDictionary<string, object>), typeof(Dictionary<string, object>))]
+    [TestCase(typeof(ICollection<string>), typeof(Collection<string>))]
     public void CreateRandomValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)
     {
       //---------------Set up test pack-------------------
@@ -149,8 +159,6 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     [TestCase(typeof(bool?), typeof(bool))]
     [TestCase(typeof(int?), typeof(int))]
-    [TestCase(typeof(ushort), typeof(ushort))]
-    [TestCase(typeof(short), typeof(short))]
     [TestCase(typeof(decimal?), typeof(decimal))]
     [TestCase(typeof(DateTime?), typeof(DateTime))]
     public void CreateRandomNullableValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)

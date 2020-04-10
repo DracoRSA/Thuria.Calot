@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
 using FluentAssertions;
+using NUnit.Framework.Internal;
 
 namespace Thuria.Calot.TestUtilities
 {
@@ -207,33 +208,49 @@ namespace Thuria.Calot.TestUtilities
         return;
       }
 
-      var errorMessage = new StringBuilder();
-      foreach (var currentCustomAttribute in customAttributes)
+      var evalDetails = new List<(string PropertyNames, object propertyValue, bool foundMethod, bool foundValue)>();
+
+      foreach (var (propertyName, propertyValue) in attributePropertyValues)
       {
-        foreach (var (attributePropertyName, attributePropertyValue) in attributePropertyValues)
-        {
-          var attributePropertyInfo = attributeType.GetProperty(attributePropertyName);
-          if (attributePropertyInfo == null)
-          {
-            errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
-                                    $"but the attribute property {attributePropertyName} does not exist on the attribute");
-            continue;
-          }
+        (string PropertyName, object propertyValue, bool foundMethod, bool foundValue) evalMetadata = (propertyName, propertyValue, false, false);
 
-          var propertyValue = attributePropertyInfo.GetValue(currentCustomAttribute);
-          if (!propertyValue.Equals(attributePropertyValue))
+        foreach (var currentAttribute in customAttributes)
+        {
+          var propertyInfo = currentAttribute.GetType().GetProperty(propertyName);
+          if (propertyInfo == null) { continue; }
+
+          evalMetadata.foundMethod = true;
+
+          if (propertyInfo.GetValue(currentAttribute).Equals(propertyValue))
           {
-            errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
-                                    $"but the attribute property {attributePropertyName} is not set to {attributePropertyValue}");
+            evalMetadata.foundValue = true;
           }
         }
 
-        if (errorMessage.Length == 0)
-        {
-          return;
-        }
+        evalDetails.Add(evalMetadata);
       }
 
+      if (evalDetails.Any(evalMetadata => evalMetadata.foundValue && evalMetadata.foundValue))
+      {
+        return;
+      }
+
+      var errorMessage = new StringBuilder();
+      foreach (var (propertyName, propertyValue, foundMethod, foundValue) in evalDetails)
+      {
+        if (!foundMethod)
+        {
+          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                  $"but the attribute property {propertyName} does not exist on the attribute");
+        }
+
+        if (!foundValue)
+        {
+          errorMessage.AppendLine($"{methodName} Method is decorated with {attributeType.Name} " +
+                                  $"but the attribute property {propertyName} is not set to {propertyValue}");
+        }
+      }
+      
       Assert.Fail(errorMessage.ToString());
     }
 

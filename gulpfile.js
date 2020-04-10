@@ -345,7 +345,7 @@ gulp.task('publish-all', gulp.series('load-settings', 'test', 'publish-win10', (
 }));
 
 // Publish-All
-gulp.task('publish-all-nuget', gulp.series('load-settings', 'nuget-publish', 'nuget-move-packages', (done) => {
+gulp.task('publish-all-nuget', gulp.series('load-settings', 'clean', 'build', 'test', 'nuget-publish', 'nuget-move-packages', (done) => {
     console.log("Done ...")
     done();
 }));
