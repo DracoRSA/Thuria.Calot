@@ -55,6 +55,18 @@ namespace Thuria.Calot.TestUtilities
                                     currentReaderCount++;
                                     return currentReaderCount < dataReaderData.Count;
                                   });
+      dataReader.FieldCount.Returns(dataReaderData.Any() ? dataReaderData.First().GetType().GetProperties().Length : 0);
+      dataReader.GetName(Arg.Any<int>()).Returns(info =>
+                                                   {
+                                                     var columnIndex = info.Arg<int>();
+                                                     return dataReaderData[currentReaderCount].GetType().GetProperties()[columnIndex].Name;
+                                                   });
+      dataReader.GetValue(Arg.Any<int>()).Returns(info =>
+                                                    {
+                                                      var columnIndex  = info.Arg<int>();
+                                                      var propertyInfo = dataReaderData[currentReaderCount].GetType().GetProperties()[columnIndex];
+                                                      return propertyInfo.GetValue(dataReaderData[currentReaderCount]);
+                                                    });
       dataReader[Arg.Any<string>()].Returns(info =>
                                               {
                                                 var columnName     = info.Arg<string>();

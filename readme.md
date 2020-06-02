@@ -16,6 +16,7 @@ Features
 * **PropertyTestHelper** - A set of helper methods to help test the Properties of an object
 * **MethodTestHelper** - A set of helper methods to help test the Methods of an object  
 * **RandomValueGenerator** - Generate Random Values based on the object type
+* **TestHelper** - Generic helpers to facilitate some general functionality
 
 ---
 ConstructorTestHelper
@@ -268,6 +269,89 @@ TestHelper
 The Test Helper contains generic test helper methods that can be used in tests.
 
 * **CreateParameterValues** - Generate random values for a list of parameters
-* **CreateSubstituteDataReader<T>** - Create a Substitute Data Reader with the specified behaviour
+* **CreateSubstituteDataReader<T>** - Create a Substitute Data Reader that will behave like a normal Data Reader
+
+Example(s):
+
+>    
+    [Test]
+    public void CreateSubstituteDataReader_GivenData_And_AdditionalColumnValues_ShouldReturnDataReaderWithExpectedData()
+    {
+      //---------------Set up test pack-------------------
+      var dataReaderData = new List<dynamic>
+        {
+          new { Id = Guid.NewGuid(), Name = RandomValueGenerator.CreateRandomString(10, 50) },
+          new { Id = Guid.NewGuid(), Name = RandomValueGenerator.CreateRandomString(10, 50) },
+          new { Id = Guid.NewGuid(), Name = RandomValueGenerator.CreateRandomString(10, 50) }
+        };
+      var additionalColumnValues = new Dictionary<string, object>
+        {
+          { "Sequence", RandomValueGenerator.CreateRandomInt(100, 500) },
+          { "Amount", RandomValueGenerator.CreateRandomDecimal(1000, 5000) },
+        };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var dataReader = TestHelper.CreateSubstituteDataReader(dataReaderData, additionalColumnValues);
+      //---------------Test Result -----------------------
+      var allFakeData = new List<FakeDataClass>();
+      while (dataReader.Read())
+      {
+        var dataClass = new FakeDataClass
+          {
+            Id       = dataReader.GetValue<Guid>(nameof(FakeDataClass.Id)),
+            Name     = dataReader.GetValue<string>(nameof(FakeDataClass.Name)),
+            Sequence = dataReader.GetValue<int>(nameof(FakeDataClass.Sequence)),
+            Amount   = dataReader.GetValue<decimal>(nameof(FakeDataClass.Amount)),
+          };
+        allFakeData.Add(dataClass);
+      }
+
+      allFakeData.Count.Should().Be(3);
+
+      foreach (var currentData in dataReaderData)
+      {
+        var foundDataClass = allFakeData.FirstOrDefault(dataClass => dataClass.Id.Equals(currentData.Id));
+        foundDataClass.Should().NotBeNull();
+        foundDataClass?.Name.Should().Be(currentData.Name);
+        foundDataClass?.Sequence.Should().Be((int) additionalColumnValues["Sequence"]);
+        foundDataClass?.Amount.Should().Be((decimal) additionalColumnValues["Amount"]);
+      }
+    }
+
+    [Test]
+    public void CreateSubstituteDataReader_GivenData_ShouldReturnDataReaderAbleToAutoMap()
+    {
+      //---------------Set up test pack-------------------
+      var dataReaderData = new List<FakeDataClass>
+        {
+          CreateRandomFakeDataClass(), CreateRandomFakeDataClass(), CreateRandomFakeDataClass()
+        };
+      var dataReader = TestHelper.CreateSubstituteDataReader(dataReaderData, customColumnAttribute: typeof(FakeDbColumnAttribute));
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var allData = new List<FakeDataClass>();
+      while (dataReader.Read())
+      {
+        var rowData = Enumerable.Range(0, dataReader.FieldCount)
+                                .ToDictionary(i => dataReader.GetName(i), i => dataReader.GetValue(i));
+
+        var fakeData = new FakeDataClass
+                         {
+                           Id          = (Guid) rowData["Id"],
+                           Name        = (string) rowData["Name"],
+                           DbAliasName = (string) rowData["DbAliasName"]
+                         };
+        allData.Add(fakeData);
+      }
+      //---------------Test Result -----------------------
+      allData.Count.Should().Be(dataReaderData.Count);
+
+      foreach (var currentReaderData in dataReaderData)
+      {
+        var foundData = allData.FirstOrDefault(data => data.Id == currentReaderData.Id);
+        foundData.Should().NotBeNull();
+        foundData.Should().BeEquivalentTo(currentReaderData);
+      }
+    }
 
 ---

@@ -109,7 +109,7 @@ namespace Thuria.Calot.TestUtilities.Tests
     }
 
     [Test]
-    public void CreateSubstituteDataReader_GivenData_And_CustomColumAttribute_ShouldReturnDataReaderWithExpectedData()
+    public void CreateSubstituteDataReader_GivenData_And_CustomColumnAttribute_ShouldReturnDataReaderWithExpectedData()
     {
       //---------------Set up test pack-------------------
       var dataReaderData = new List<FakeDataClass>
@@ -140,6 +140,42 @@ namespace Thuria.Calot.TestUtilities.Tests
         foundDataClass.Should().NotBeNull();
         foundDataClass?.Name.Should().Be(currentData.Name);
         foundDataClass?.DbAliasName.Should().Be(currentData.DbAliasName);
+      }
+    }
+
+    [Test]
+    public void CreateSubstituteDataReader_GivenData_ShouldReturnDataReaderAbleToAutoMap()
+    {
+      //---------------Set up test pack-------------------
+      var dataReaderData = new List<FakeDataClass>
+        {
+          CreateRandomFakeDataClass(), CreateRandomFakeDataClass(), CreateRandomFakeDataClass()
+        };
+      var dataReader = TestHelper.CreateSubstituteDataReader(dataReaderData, customColumnAttribute: typeof(FakeDbColumnAttribute));
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var allData = new List<FakeDataClass>();
+      while (dataReader.Read())
+      {
+        var rowData = Enumerable.Range(0, dataReader.FieldCount)
+                                .ToDictionary(i => dataReader.GetName(i), i => dataReader.GetValue(i));
+
+        var fakeData = new FakeDataClass
+                         {
+                           Id          = (Guid) rowData["Id"],
+                           Name        = (string) rowData["Name"],
+                           DbAliasName = (string) rowData["DbAliasName"]
+                         };
+        allData.Add(fakeData);
+      }
+      //---------------Test Result -----------------------
+      allData.Count.Should().Be(dataReaderData.Count);
+
+      foreach (var currentReaderData in dataReaderData)
+      {
+        var foundData = allData.FirstOrDefault(data => data.Id == currentReaderData.Id);
+        foundData.Should().NotBeNull();
+        foundData.Should().BeEquivalentTo(currentReaderData);
       }
     }
 
