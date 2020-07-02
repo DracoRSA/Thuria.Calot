@@ -9,7 +9,6 @@ Overview
 A set of packages with a set of helper methods to assist with some of the repetitive tests that is done when we are unit testing our applications.
 
 
-
 Features
 ---
 * **ConstructorTestHelper** - A set of helper methods to help test the Construction of an object
@@ -251,6 +250,7 @@ Other functionality:
  
 * **CreateRandomFrom\<T>** - Select random value from a collection of values
 * **CreateRandomCollection** - Create a collection of random values
+* **CreateRandomArray** - Create an array of random values of the specified array type
 
 **CreateRandomValue(Type objectType)**\
 Create a random value of the specified type which will include all the types mentioned above\

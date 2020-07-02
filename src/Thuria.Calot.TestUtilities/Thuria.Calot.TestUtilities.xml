@@ -46,7 +46,7 @@
             <param name="parameterName">Parameter Name to test</param>
             <param name="constructorParams">Optional Constructor Parameters</param>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidatePropertySetWithParameter``1(System.String,System.String)">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidatePropertySetWithParameter``1(System.String,System.String,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Validate that a property is set with the value given during the constructing of the object
             </summary>
@@ -254,6 +254,15 @@
             <typeparam name="T"></typeparam>
             <param name="items"></param>
             <returns></returns>
+        </member>
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomArray(System.Type,System.Int32,System.Int32)">
+            <summary>
+            Create Random Array
+            </summary>
+            <param name="arrayType">Array Type</param>
+            <param name="minItems">Minimum number of items (Optional)</param>
+            <param name="maxItems">Maximum number of items (Optional)</param>
+            <returns>An Array of Random values of the specified type</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomList(System.Type,System.Int32,System.Int32)">
             <summary>

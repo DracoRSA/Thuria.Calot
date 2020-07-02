@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-
+using System.Reflection;
 using NUnit.Framework;
 using FluentAssertions;
+using Thuria.Calot.TestUtilities.Tests.Fake;
 using Thuria.Zitidar.Extensions;
 
 namespace Thuria.Calot.TestUtilities.Tests
@@ -132,6 +133,30 @@ namespace Thuria.Calot.TestUtilities.Tests
           //---------------Test Result -----------------------
           fakeException.Should().NotBeNull();
         });
+    }
+
+    [Test]
+    public void ConstructObject_GivenArray_ShouldNotThrowException()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ConstructObject<FakeTestClass2>());
+      //---------------Test Result -----------------------
+    }
+
+    [TestCase("fakeComplex")]
+    [TestCase("fakeClass")]
+    public void ConstructObject_GivenObjectWithMultipleConstructors_ShouldConstructUsingMatchingConstructor(string parameterName)
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<TargetInvocationException>(() => ConstructorTestHelper.ConstructObject<FakeTestClass3>(parameterName));
+      //---------------Test Result -----------------------
+      exception.Should().NotBeNull();
+      exception.InnerException.Should().BeOfType<ArgumentNullException>();
+      ((ArgumentNullException) exception.InnerException)?.ParamName.Should().Be(parameterName);
     }
 
     [Test]

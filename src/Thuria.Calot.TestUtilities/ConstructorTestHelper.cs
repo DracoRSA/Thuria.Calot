@@ -41,7 +41,22 @@ namespace Thuria.Calot.TestUtilities
     public static object ConstructObject(Type objectType, string parameterName = null, object parameterValue = null, 
                                          params (string parameterName, object parameterValue)[] constructorParams)
     {
-      var constructorInfo = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).FirstOrDefault();
+      ConstructorInfo constructorInfo = null;
+
+      var allConstructors = objectType.GetConstructors().OrderByDescending(info => info.GetParameters().Length).ToList();
+      if (allConstructors.Count == 1)
+      {
+        constructorInfo = allConstructors.First();
+      }
+      else
+      {
+        constructorInfo = allConstructors.FirstOrDefault(info => info.GetParameters().Any(parameterInfo => parameterInfo.Name == parameterName));
+        if (constructorInfo == null)
+        {
+          constructorInfo = allConstructors.First();
+        }
+      }
+                                      
       if (constructorInfo == null)
       {
         throw new Exception($"No Constructors found for object {objectType.FullName}");
@@ -136,11 +151,25 @@ namespace Thuria.Calot.TestUtilities
     /// <typeparam name="T"></typeparam>
     /// <param name="parameterName">Constructor parameter Name</param>
     /// <param name="propertyName">Object Property Name</param>
-    public static void ValidatePropertySetWithParameter<T>(string parameterName, string propertyName) 
+    public static void ValidatePropertySetWithParameter<T>(string parameterName, string propertyName,
+                                                           params (string parameterName, object parameterValue)[] constructorParams) 
       where T : class
     {
       var parameterValue = typeof(T).GetProperty(propertyName).CreateRandomValue();
-      var objectUnderTest = ConstructObject<T>(parameterName, parameterValue);
+      var parameterList = Enumerable.Range(0, constructorParams.Length)
+                                    .ToDictionary(i => constructorParams[i].parameterValue, i => constructorParams[i].parameterValue);
+
+      if (parameterList.ContainsKey(parameterName))
+      {
+        parameterList[parameterName] = parameterValue;
+      }
+      else
+      {
+        parameterList.Add(parameterName, parameterValue);
+      }
+
+      // var objectUnderTest = ConstructObject<T>(parameterName, parameterValue);
+      var objectUnderTest = ConstructObject<T>(parameterName, parameterValue, parameterList.Select(pair => (pair.Key.ToString(), pair.Value)).ToArray());
       if (objectUnderTest == null)
       {
         Assert.Fail($"Failed to create {typeof(T).FullName} to test Property Get and Set for {propertyName}");

@@ -114,6 +114,11 @@ namespace Thuria.Calot.TestUtilities
         throw new Exception($"Random Value Generator for {objectType.Name} does not exist");
       }
 
+      if (randomType.IsArray && randomType.IsClass)
+      {
+        return CreateRandomArray(randomType.GetElementType());
+      }
+
       var mockedObject = randomType.CreateSubstitute();
       return mockedObject;
     }
@@ -302,6 +307,27 @@ namespace Thuria.Calot.TestUtilities
       var itemArray = items as T[] ?? items.ToArray();
       var maxValue  = itemArray.Length - 1;
       return itemArray.Skip(CreateRandomInt(0, maxValue)).First();
+    }
+
+    /// <summary>
+    /// Create Random Array
+    /// </summary>
+    /// <param name="arrayType">Array Type</param>
+    /// <param name="minItems">Minimum number of items (Optional)</param>
+    /// <param name="maxItems">Maximum number of items (Optional)</param>
+    /// <returns>An Array of Random values of the specified type</returns>
+    public static object CreateRandomArray(Type arrayType, int minItems = MinimumCollectionItems, int maxItems = MaximumCollectionItems)
+    {
+      var arrayCount  = RandomValueGenerator.CreateRandomInt(minItems, maxItems);
+      var randomArray = Array.CreateInstance(arrayType, arrayCount);
+
+      for (var loopCount = 0; loopCount < arrayCount; loopCount++)
+      {
+        var randomValue = RandomValueGenerator.CreateRandomValue(arrayType);
+        randomArray.SetValue(randomValue, loopCount);
+      }
+
+      return randomArray;
     }
 
     /// <summary>

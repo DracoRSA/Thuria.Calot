@@ -143,6 +143,7 @@ namespace Thuria.Calot.TestUtilities.Tests
     [TestCase(typeof(Dictionary<string, object>), typeof(Dictionary<string, object>))]
     [TestCase(typeof(IDictionary<string, object>), typeof(Dictionary<string, object>))]
     [TestCase(typeof(ICollection<string>), typeof(Collection<string>))]
+    [TestCase(typeof(FakeComplex[]), typeof(FakeComplex[]))]
     public void CreateRandomValue_GivenType_ShouldNotThrowExceptionAndCreateRandomValue(Type objectType, Type expectedType)
     {
       //---------------Set up test pack-------------------
