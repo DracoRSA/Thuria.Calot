@@ -201,12 +201,13 @@
             <param name="maximumValue">Maximum Value (Optional)</param>
             <returns>Random ulong value</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomInt(System.Int32,System.Int32)">
+        <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomInt(System.Int32,System.Int32,System.Boolean)">
             <summary>
             Create Random Int
             </summary>
             <param name="minimumValue">Minimum Value (Optional)</param>
             <param name="maximumValue">Maximum Value (Optional)</param>
+            <param name="shouldBePositive">Should Be Positive indicator (Default true)</param>
             <returns>Random int value</returns>
         </member>
         <member name="M:Thuria.Calot.TestUtilities.RandomValueGenerator.CreateRandomLong(System.Int32,System.Int32)">

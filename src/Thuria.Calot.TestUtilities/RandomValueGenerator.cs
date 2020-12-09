@@ -149,7 +149,7 @@ namespace Thuria.Calot.TestUtilities
 
       for (var i = 0; i < actualLength; i++)
       {
-        var characterPosition = CreateRandomInt(1, charSetLength - 1);
+        var characterPosition = CreateRandomInt(1, charSetLength - 1, false);
         chars.Add(charSet[characterPosition]);
       }
 
@@ -214,9 +214,15 @@ namespace Thuria.Calot.TestUtilities
     /// </summary>
     /// <param name="minimumValue">Minimum Value (Optional)</param>
     /// <param name="maximumValue">Maximum Value (Optional)</param>
+    /// <param name="shouldBePositive">Should Be Positive indicator (Default true)</param>
     /// <returns>Random int value</returns>
-    public static int CreateRandomInt(int minimumValue = int.MinValue, int maximumValue = int.MaxValue)
+    public static int CreateRandomInt(int minimumValue = int.MinValue, int maximumValue = int.MaxValue, bool shouldBePositive = true)
     {
+      if (shouldBePositive && minimumValue <= 0)
+      {
+        minimumValue = 1;
+      }
+
       return (int)CreateRandomNumber(minimumValue, maximumValue);
     }
 

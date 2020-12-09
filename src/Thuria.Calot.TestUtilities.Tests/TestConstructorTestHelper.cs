@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Reflection;
+using System.Collections.Generic;
 using NUnit.Framework;
 using FluentAssertions;
-using Thuria.Calot.TestUtilities.Tests.Fake;
 using Thuria.Zitidar.Extensions;
+using Thuria.Calot.TestUtilities.Tests.Fake;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {
@@ -157,6 +157,16 @@ namespace Thuria.Calot.TestUtilities.Tests
       exception.Should().NotBeNull();
       exception.InnerException.Should().BeOfType<ArgumentNullException>();
       ((ArgumentNullException) exception.InnerException)?.ParamName.Should().Be(parameterName);
+    }
+
+    [Test]
+    public void ConstructObject_GivenNonZeroParameter_ShouldConstructCorrectly()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ConstructObject<FakeTestClass4>());
+      //---------------Test Result -----------------------
     }
 
     [Test]
