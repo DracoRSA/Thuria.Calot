@@ -40,6 +40,7 @@ namespace Thuria.Calot.TestUtilities.Tests
 
     [TestCase(1, 10)]
     [TestCase(20, 55)]
+    [TestCase(100, 200)]
     [TestCase(255, 1024)]
     public void CreateRandomLong_GivenMinimumAndMaximumValues_ShouldGenerateValueBetweenGivenValues(int minimumValue, int maximumValue)
     {

@@ -21,13 +21,15 @@ namespace Thuria.Calot.TestUtilities
     /// <typeparam name="T">Object Type to be Constructed</typeparam>
     /// <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
     /// <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+    /// <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
     /// <param name="constructorParams">Optional Constructor Parameters</param>
     /// <returns>Newly constructed object</returns>
-    public static T ConstructObject<T>(string parameterName = null, object parameterValue = null, 
+    public static T ConstructObject<T>(string parameterName = null, object parameterValue = null,
+                                       bool allParametersMatch = false,
                                        params (string parameterName, object parameterValue)[] constructorParams) 
       where T : class
     {
-      return (T) ConstructObject(typeof(T), parameterName, parameterValue, constructorParams);
+      return (T) ConstructObject(typeof(T), parameterName, parameterValue, allParametersMatch, constructorParams);
     }
 
     /// <summary>
@@ -36,9 +38,11 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="objectType">Object Type to be Constructed</param>
     /// <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
     /// <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+    /// <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
     /// <param name="constructorParams">Optional Constructor Parameters</param>
     /// <returns>Newly constructed object</returns>
     public static object ConstructObject(Type objectType, string parameterName = null, object parameterValue = null, 
+                                         bool allParametersMatch = false,
                                          params (string parameterName, object parameterValue)[] constructorParams)
     {
       ConstructorInfo constructorInfo = null;
@@ -50,7 +54,10 @@ namespace Thuria.Calot.TestUtilities
       }
       else
       {
-        constructorInfo = allConstructors.FirstOrDefault(info => info.GetParameters().Any(parameterInfo => parameterInfo.Name == parameterName));
+        constructorInfo = allParametersMatch 
+                            ? allConstructors.FirstOrDefault(info => info.GetParameters().All(parameterInfo => constructorParams.ToList().Exists(tuple => tuple.parameterName == parameterInfo.Name))) 
+                            : allConstructors.FirstOrDefault(info => info.GetParameters().Any(parameterInfo => parameterInfo.Name == parameterName));
+
         if (constructorInfo == null)
         {
           constructorInfo = allConstructors.First();
@@ -122,15 +129,17 @@ namespace Thuria.Calot.TestUtilities
     /// <typeparam name="T">Object to test</typeparam>
     /// <typeparam name="TException">Exception expected to be thrown</typeparam>
     /// <param name="parameterName">Parameter Name to test</param>
+    /// <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
     /// <param name="constructorParams">Optional Constructor Parameters</param>
     public static void ValidateExceptionIsThrownIfParameterIsNull<T, TException>(string parameterName,
+                                                                                 bool allParametersMatch = false,
                                                                                  params (string parameterName, object ParameterValue)[] constructorParams)
       where T : class
       where TException : Exception
     {
       try
       {
-        ConstructObject<T>(parameterName, constructorParams: constructorParams);
+        ConstructObject<T>(parameterName, allParametersMatch: allParametersMatch, constructorParams: constructorParams);
         Assert.Fail($"{typeof(TException).Name} Exception not throw for Constructor Parameter [{parameterName}] on {typeof(T).FullName}");
       }
       catch (TargetInvocationException invocationException)
@@ -151,7 +160,10 @@ namespace Thuria.Calot.TestUtilities
     /// <typeparam name="T"></typeparam>
     /// <param name="parameterName">Constructor parameter Name</param>
     /// <param name="propertyName">Object Property Name</param>
+    /// <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
+    /// <param name="constructorParams">Optional Constructor Parameters</param>
     public static void ValidatePropertySetWithParameter<T>(string parameterName, string propertyName,
+                                                           bool allParametersMatch = false,
                                                            params (string parameterName, object parameterValue)[] constructorParams) 
       where T : class
     {
@@ -169,7 +181,7 @@ namespace Thuria.Calot.TestUtilities
       }
 
       // var objectUnderTest = ConstructObject<T>(parameterName, parameterValue);
-      var objectUnderTest = ConstructObject<T>(parameterName, parameterValue, parameterList.Select(pair => (pair.Key.ToString(), pair.Value)).ToArray());
+      var objectUnderTest = ConstructObject<T>(parameterName, parameterValue, allParametersMatch, parameterList.Select(pair => (pair.Key.ToString(), pair.Value)).ToArray());
       if (objectUnderTest == null)
       {
         Assert.Fail($"Failed to create {typeof(T).FullName} to test Property Get and Set for {propertyName}");

@@ -9,23 +9,25 @@
             Constructor Test Helper Methods
             </summary>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject``1(System.String,System.Object,System.ValueTuple{System.String,System.Object}[])">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject``1(System.String,System.Object,System.Boolean,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Helper method to construct any object and create default parameters as necessary
             </summary>
             <typeparam name="T">Object Type to be Constructed</typeparam>
             <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
             <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+            <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
             <param name="constructorParams">Optional Constructor Parameters</param>
             <returns>Newly constructed object</returns>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject(System.Type,System.String,System.Object,System.ValueTuple{System.String,System.Object}[])">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ConstructObject(System.Type,System.String,System.Object,System.Boolean,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Helper method to construct any object and create default parameters as necessary
             </summary>
             <param name="objectType">Object Type to be Constructed</param>
             <param name="parameterName">Parameter Name of parameter that should contain null or specified value (Optional)</param>
             <param name="parameterValue">Parameter Value that should be used for specified parameter</param>
+            <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
             <param name="constructorParams">Optional Constructor Parameters</param>
             <returns>Newly constructed object</returns>
         </member>
@@ -37,22 +39,25 @@
             <param name="parameterName">Parameter Name to test</param>
             <param name="constructorParams">Optional Constructor Parameters</param>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull``2(System.String,System.ValueTuple{System.String,System.Object}[])">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull``2(System.String,System.Boolean,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Validate that the specified Exception is thrown if the specified parameter value is null
             </summary>
             <typeparam name="T">Object to test</typeparam>
             <typeparam name="TException">Exception expected to be thrown</typeparam>
             <param name="parameterName">Parameter Name to test</param>
+            <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
             <param name="constructorParams">Optional Constructor Parameters</param>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidatePropertySetWithParameter``1(System.String,System.String,System.ValueTuple{System.String,System.Object}[])">
+        <member name="M:Thuria.Calot.TestUtilities.ConstructorTestHelper.ValidatePropertySetWithParameter``1(System.String,System.String,System.Boolean,System.ValueTuple{System.String,System.Object}[])">
             <summary>
             Validate that a property is set with the value given during the constructing of the object
             </summary>
             <typeparam name="T"></typeparam>
             <param name="parameterName">Constructor parameter Name</param>
             <param name="propertyName">Object Property Name</param>
+            <param name="allParametersMatch">All Parameter Names must match when looking for a matching constructor</param>
+            <param name="constructorParams">Optional Constructor Parameters</param>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.MethodTestHelper">
             <summary>

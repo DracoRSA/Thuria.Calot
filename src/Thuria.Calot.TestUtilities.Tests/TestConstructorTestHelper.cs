@@ -170,6 +170,17 @@ namespace Thuria.Calot.TestUtilities.Tests
     }
 
     [Test]
+    public void ConstructObject_GivenAllParametersMustMatch_ShouldConstructCorrectly()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ConstructObject<FakeTestClass4>(null, null, true, 
+                                                                                      ("someTestValue", 200)));
+      //---------------Test Result -----------------------
+    }
+
+    [Test]
     public void ValidateArgumentNullExceptionIfParameterIsNull_GivenParameterWhereExceptionIsNotThrown_ShouldFailTest()
     {
       //---------------Set up test pack-------------------
@@ -281,7 +292,7 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName,
-                                                                                                                                                  parameterValues.ToArray()));
+                                                                                                                                                                     constructorParams: parameterValues.ToArray()));
       //---------------Test Result -----------------------
       exception.Message.Should().Contain($"ArgumentNullException Exception not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
     }
@@ -294,7 +305,8 @@ namespace Thuria.Calot.TestUtilities.Tests
       //---------------Set up test pack-------------------
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
-      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName, ("testDateTime", DateTime.Now)));
+      Assert.DoesNotThrow(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName, 
+                                                                                                                                       constructorParams: ("testDateTime", DateTime.Now)));
       //---------------Test Result -----------------------
     }
   }

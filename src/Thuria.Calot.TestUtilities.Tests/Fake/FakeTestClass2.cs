@@ -2,6 +2,11 @@
 {
   public class FakeTestClass2
   {
+    public FakeTestClass2(int someTestValue)
+    {
+      SomeTestValue = someTestValue;
+    }
+
     public FakeTestClass2(int someTestValue, FakeComplex[] allFakes)
     {
       SomeTestValue = someTestValue;
