@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {

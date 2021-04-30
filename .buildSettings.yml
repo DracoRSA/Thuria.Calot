@@ -1,9 +1,9 @@
-VERSION: 1.6.0
+VERSION: 1.7.0
 CONFIGURATION: Release
 NUGETPACKAGES:
   - TestUtilities:
     Name: Calot.TestUtilities
-    Version: 1.6.0
+    Version: 1.7.0
     Location: src/Thuria.Calot.TestUtilities
     IsBeta: false
     Frameworks:

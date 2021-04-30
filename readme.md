@@ -23,11 +23,25 @@ ConstructorTestHelper
 
 The Constructor Test Helper consists of the following helper methods:
 
-* ConstructObject\<T>(parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
-* ConstructObject(objectType, parameterName, parameterValue, params (string parameterName, object parameterValue)[] constructorParams)
-* ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(parameterName, params (string parameterName, object parameterValue)[] constructorParams)
-* ValidateArgumentNullExceptionIfParameterIsNull\<T>(parameterName, params (string parameterName, object parameterValue)[] constructorParams)
-* ValidatePropertySetWithParameter\<T>(parameterName, propertyName)
+  >
+    ConstructObject\<T>(parameterName, parameterValue, 
+                        bool allParametersMatch = false,
+                        params (string parameterName, object parameterValue)[] constructorParams)
+
+    ConstructObject(objectType, parameterName, parameterValue, 
+                    bool allParametersMatch = false,
+                    params (string parameterName, object parameterValue)[] constructorParams)
+
+    ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(parameterName, 
+                                                                params (string parameterName, object parameterValue)[] constructorParams)
+
+    ValidateArgumentNullExceptionIfParameterIsNull\<T>(parameterName,
+                                                        bool allParametersMatch = false,
+                                                        params (string parameterName, object parameterValue)[] constructorParams)
+
+    ValidatePropertySetWithParameter\<T>(parameterName, propertyName,
+                                          bool allParametersMatch = false,
+                                          params (string parameterName, object parameterValue)[] constructorParams) 
 
 Examples:
 
@@ -135,7 +149,7 @@ Examples:
       //---------------Assert Precondition----------------
       //---------------Execute Test ----------------------
       var exception = Assert.Throws<AssertionException>(() => ConstructorTestHelper.ValidateExceptionIsThrownIfParameterIsNull<FakeTestClass, ArgumentNullException>(parameterName, 
-                                                                                                                                                  parameterValues.ToArray()));
+                                                                                                                                                                     parameterValues.ToArray()));
       //---------------Test Result -----------------------
       exception.Message.Should().Contain($"ArgumentNullException not throw for Constructor Parameter [{parameterName}] on {typeof(FakeTestClass).FullName}");
     }
@@ -158,10 +172,13 @@ PropertyTestHelper
 
 The Property Test Helper consists of the following helper methods:
 
-* ValidateGetAndSet\<T>(propertyName)
-* ValidateGetAndSet(objectType, propertyName)
-* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
-                                     List<(string propertyName, object propertyValue)> attributePropertyValues = null)
+>
+    ValidateGetAndSet\<T>(propertyName)
+
+    ValidateGetAndSet(objectType, propertyName)
+
+    ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
+                                      List<(string propertyName, object propertyValue)> attributePropertyValues = null)
 
 Examples:
 
@@ -193,12 +210,19 @@ MethodTestHelper
 
 The Method Test Helper consist of the following helper methods:
 
-* ValidateArgumentNullExceptionIfParameterIsNull\<T>(methodName, parameterName, parameterValue)
-* ValidateArgumentNullExceptionIfParameterIsNullAsync\<T>(methodName, parameterName, parameterValue)
-* ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(methodName, parameterName, parameterValue)
-* ValidateExceptionIsThrownIfParameterIsNullAsync\<T, TException>(methodName, parameterName, parameterValue)
-* ValidateDecoratedWithAttribute\<T>(propertyName, attributeType, \
-                                     List<(string propertyName, object propertyValue)> attributePropertyValues = null)
+>
+    ValidateArgumentNullExceptionIfParameterIsNull\<T>(methodName, parameterName, parameterValue)
+
+    ValidateArgumentNullExceptionIfParameterIsNullAsync\<T>(methodName, parameterName, parameterValue)
+
+    ValidateExceptionIsThrownIfParameterIsNull\<T, TException>(methodName, parameterName, parameterValue)
+
+    ValidateExceptionIsThrownIfParameterIsNullAsync\<T, TException>(methodName, parameterName, parameterValue)
+
+    ValidateDecoratedWithAttribute\<T>(propertyName, attributeType,
+                                      List<(string propertyName, object propertyValue)> attributePropertyValues = null,
+                                      bool supportMultipleMethods = false,
+                                      List<string> matchingParameters = null) 
 
 Example(s):
 
@@ -224,6 +248,22 @@ Example(s):
       MethodTestHelper.ValidateExceptionIsThrownIfParameterIsNull<DatabaseContext, ArgumentNullException>(methodName, parameterName);
       //---------------Test Result -----------------------
     }
+    [Test]
+    public void Methods_MethodShouldBeDecoratedWithAttribute()
+    {
+      //---------------Set up test pack-------------------
+      var matchingParameters = new List<string>
+                   {
+                     "someParameter"
+                   };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass2>("FakeTestMethod", typeof(FakeTestAttribute), 
+                                                                      supportMulitpleMethods: true, 
+                                                                      matchingParameters: matchingParameters);
+      //---------------Test Result -----------------------
+    }
+
 ---
 RandomValueGenerator
 ---

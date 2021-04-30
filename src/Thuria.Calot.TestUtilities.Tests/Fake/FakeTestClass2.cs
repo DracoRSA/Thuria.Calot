@@ -1,4 +1,6 @@
-﻿namespace Thuria.Calot.TestUtilities.Tests.Fake
+﻿using Newtonsoft.Json;
+
+namespace Thuria.Calot.TestUtilities.Tests.Fake
 {
   public class FakeTestClass2
   {
@@ -15,5 +17,15 @@
 
     public int SomeTestValue { get; }
     public FakeComplex[] AllFakes { get; set; }
+
+    [FakeTest("FakeTestMethod")]
+    public void FakeTestMethod()
+    {
+    }
+
+    [FakeTest("FakeTestMethod")]
+    public void FakeTestMethod(int someParameter)
+    {
+    }
   }
 }

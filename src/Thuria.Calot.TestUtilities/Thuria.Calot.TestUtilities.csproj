@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.0;net461;net472;net48</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461;net472;net48</TargetFrameworks>
     <Authors>Johan Dercksen</Authors>
     <Company>Draco</Company>
     <Product>Thuria</Product>
@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/DracoRSA/Thuria.Calot</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/DracoRSA/Thuria.Calot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>Thuria NUnit TestUtilities</PackageTags>
-    <Version>1.6.0</Version>
+    <Version>1.7.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

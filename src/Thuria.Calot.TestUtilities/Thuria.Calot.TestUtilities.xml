@@ -102,7 +102,7 @@
             <param name="parameterName">Method Parameter Name to verify</param>
             <param name="parameterValue">Parameter Value (Default null)</param>
         </member>
-        <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateDecoratedWithAttribute``1(System.String,System.Type,System.Collections.Generic.List{System.ValueTuple{System.String,System.Object}})">
+        <member name="M:Thuria.Calot.TestUtilities.MethodTestHelper.ValidateDecoratedWithAttribute``1(System.String,System.Type,System.Collections.Generic.List{System.ValueTuple{System.String,System.Object}},System.Boolean,System.Collections.Generic.List{System.String})">
             <summary>
             Validate that the method is Decorated with the expected Attribute
             </summary>
@@ -110,6 +110,8 @@
             <param name="methodName">Object Method Name</param>
             <param name="attributeType">Attribute Type</param>
             <param name="attributePropertyValues">Attribute Property Values</param>
+            <param name="supportMultipleMethods">Allow multiple matching methods (Default : false)</param>
+            <param name="matchingParameters">List of parameters to find the method to test</param>
         </member>
         <member name="T:Thuria.Calot.TestUtilities.PropertyTestHelper">
             <summary>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 using FluentAssertions;
+using Thuria.Calot.TestUtilities.Tests.Fake;
 
 namespace Thuria.Calot.TestUtilities.Tests
 {
@@ -61,6 +62,18 @@ namespace Thuria.Calot.TestUtilities.Tests
       var exception = Assert.Throws<ArgumentNullException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeMethodTest>(null, typeof(FakeTestAttribute)));
       //---------------Test Result -----------------------
       exception.ParamName.Should().Be("methodName");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMethodNameDoesNotExist_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var methodName = "UnknownMethod";
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeMethodTest>(methodName, typeof(FakeTestAttribute)));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Be($"Method [{methodName}] does not exists on {typeof(FakeMethodTest).FullName}");
     }
 
     [Test]
@@ -128,6 +141,67 @@ namespace Thuria.Calot.TestUtilities.Tests
       var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass>(methodName, attributeType));
       //---------------Test Result -----------------------
       exception.Message.Should().Be($"Method {methodName} is not decorated with {attributeType.Name} Attribute");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMultipleMethodsWithSameName_And_NotAllowMultipleMethods_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass2>("FakeTestMethod", 
+                                                                                                                              typeof(FakeTestAttribute),
+                                                                                                                              supportMultipleMethods: false));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Be("Multiple methods with the same name found. Please specify the method to use");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMultipleMethodsWithSameName_And_AllowMultipleMethods_And_NoMatchingParameters_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass2>("FakeTestMethod", 
+                                                                                                                              typeof(FakeTestAttribute), 
+                                                                                                                              supportMultipleMethods: true));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Be("Multiple methods with the same name found. Please specify the method to use by specifying the matching parameters");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMultipleMethodsWithSameName_And_AllowMultipleMethods_And_NoParametersFail_ShouldFailTest()
+    {
+      //---------------Set up test pack-------------------
+      var matchingParameters = new List<string>
+                                 {
+                                   "someParameter",
+                                   "unmatchedParameter"
+                                 };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      var exception = Assert.Throws<AssertionException>(() => MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass2>("FakeTestMethod", 
+                                                                                                                              typeof(FakeTestAttribute), 
+                                                                                                                              supportMultipleMethods: true,
+                                                                                                                              matchingParameters: matchingParameters));
+      //---------------Test Result -----------------------
+      exception.Message.Should().Be("Failed to find a matching method using the specified matching parameters");
+    }
+
+    [Test]
+    public void ValidateDecoratedWithAttribute_GivenMultipleMethodsWithSameName_And_MethodDecoratedWithAttribute_ShouldPassTest()
+    {
+      //---------------Set up test pack-------------------
+      var matchingParameters = new List<string>
+                   {
+                     "someParameter"
+                   };
+      //---------------Assert Precondition----------------
+      //---------------Execute Test ----------------------
+      MethodTestHelper.ValidateDecoratedWithAttribute<FakeTestClass2>("FakeTestMethod", typeof(FakeTestAttribute), 
+                                                                      supportMultipleMethods: true, 
+                                                                      matchingParameters: matchingParameters);
+      //---------------Test Result -----------------------
     }
 
     private class FakeMethodTest

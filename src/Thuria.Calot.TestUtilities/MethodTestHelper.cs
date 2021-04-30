@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Text;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Text;
+
 using NUnit.Framework;
 using FluentAssertions;
-using NUnit.Framework.Internal;
 
 namespace Thuria.Calot.TestUtilities
 {
@@ -171,8 +171,13 @@ namespace Thuria.Calot.TestUtilities
     /// <param name="methodName">Object Method Name</param>
     /// <param name="attributeType">Attribute Type</param>
     /// <param name="attributePropertyValues">Attribute Property Values</param>
-    public static void ValidateDecoratedWithAttribute<T>(string methodName, Type attributeType,
-                                                         List<(string propertyName, object propertyValue)> attributePropertyValues = null) 
+    /// <param name="supportMultipleMethods">Allow multiple matching methods (Default : false)</param>
+    /// <param name="matchingParameters">List of parameters to find the method to test</param>
+    public static void ValidateDecoratedWithAttribute<T>(string methodName, 
+                                                         Type attributeType,
+                                                         List<(string propertyName, object propertyValue)> attributePropertyValues = null,
+                                                         bool supportMultipleMethods = false,
+                                                         List<string> matchingParameters = null) 
       where T : class
     {
       if (string.IsNullOrWhiteSpace(methodName))
@@ -191,13 +196,46 @@ namespace Thuria.Calot.TestUtilities
         Assert.Fail($"Failed to create {typeof(T).FullName} to validate Method {methodName} decorated with attribute {attributeType.Name}");
       }
 
-      var methodInfo = objectUnderTest.GetType().GetMethod(methodName);
-      if (methodInfo == null)
+      var allMethods = objectUnderTest.GetType().GetMethods().Where(info => info.Name == methodName).ToList();
+      if (allMethods == null || !allMethods.Any())
       {
         Assert.Fail($"Method [{methodName}] does not exists on {objectUnderTest.GetType().FullName}");
       }
 
-      var customAttributes = methodInfo.GetCustomAttributes(attributeType);
+      MethodInfo methodUnderTest = null;
+      if (allMethods.Count() == 1)
+      {
+        methodUnderTest = allMethods.First();
+      }
+      else if (!supportMultipleMethods)
+      {
+        Assert.Fail("Multiple methods with the same name found. Please specify the method to use");
+      }
+      else if (matchingParameters == null || !matchingParameters.Any())
+      {
+        Assert.Fail("Multiple methods with the same name found. Please specify the method to use by specifying the matching parameters");
+      }
+      else
+      {
+        foreach (var currentMethod in allMethods)
+        {
+          var methodParameters = currentMethod.GetParameters();
+          if (matchingParameters.Any(parameterName => methodParameters.FirstOrDefault(info => info.Name == parameterName) == null))
+          {
+            continue;
+          }
+
+          methodUnderTest = currentMethod;
+          break;
+        }
+
+        if (methodUnderTest == null)
+        {
+          Assert.Fail("Failed to find a matching method using the specified matching parameters");
+        }
+      }
+
+      var customAttributes = methodUnderTest.GetCustomAttributes(attributeType).ToList();
       if (customAttributes == null || !customAttributes.Any())
       {
         Assert.Fail($"Method {methodName} is not decorated with {attributeType.Name} Attribute");
