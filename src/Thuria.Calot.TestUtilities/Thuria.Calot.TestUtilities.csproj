@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/DracoRSA/Thuria.Calot</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/DracoRSA/Thuria.Calot/blob/master/LICENSE</PackageLicenseUrl>
     <PackageTags>Thuria NUnit TestUtilities</PackageTags>
-    <Version>1.10.0</Version>
+    <Version>1.10.1</Version>
     <Nullable>annotations</Nullable>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NSubstitute" Version="5.1.0" />
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="Thuria.Zitidar.Extensions" Version="1.8.0" />
+    <PackageReference Include="Thuria.Zitidar.Extensions" Version="1.10.0" />
   </ItemGroup>
 
 </Project>
