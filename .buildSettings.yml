@@ -1,9 +1,9 @@
-VERSION: 1.8.0
+VERSION: 1.10.0
 CONFIGURATION: Release
 NUGETPACKAGES:
   - TestUtilities:
     Name: Calot.TestUtilities
-    Version: 1.9.0
+    Version: 1.10.0
     Location: src/Thuria.Calot.TestUtilities
     IsBeta: false
     Frameworks:
@@ -11,6 +11,6 @@ NUGETPACKAGES:
       - net472
       - net48
       - netstandard2.0
-      - netcoreapp3.0
       - net6
       - net7.0
+      - net8.0
