@@ -89,7 +89,8 @@ let packNugetPackage = async (currentNugetPackage) => {
         let processCommand = 'dotnet pack ';
         let processArgs = packageLocation +
                           ' --output ' + packConfiguration.output +
-                          ' --no-build --no-restore --configuration ' + packConfiguration.configuration;
+                          ' --no-build --no-restore --configuration ' + packConfiguration.configuration +
+                          ' --verbosity normal ';
 
         var childProcess = exec(processCommand + processArgs, {maxBuffer: 500 *1024 }, function(err, stdout, stderr) {
             if (err) {

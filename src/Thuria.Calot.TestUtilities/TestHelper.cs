@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
+using System.Data;
 using System.Reflection;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
+
 using NSubstitute;
 using NUnit.Framework;
+
 using Thuria.Zitidar.Extensions;
 
 namespace Thuria.Calot.TestUtilities
