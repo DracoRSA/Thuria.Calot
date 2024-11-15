@@ -1,0 +1,6 @@
+{
+    "$schema": "./build.schema.json",
+    "Solution": "src/Thuria.Calot.sln",
+    "NuGetApiKey": "v1:2/iSfUti7vhr3v3K67CMfanwJGF6NYB5bj2hBVZYli4Xd77OZfk4mTmyvONnU9+D",
+    "NuGetSource": "https://api.nuget.org/v3/index.json"
+}

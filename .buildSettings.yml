@@ -1,14 +1,5 @@
-VERSION: 1.10.2
-CONFIGURATION: Release
-NUGETPACKAGES:
-  - TestUtilities:
-    Name: Calot.TestUtilities
-    Version: 1.10.2
-    Location: src/Thuria.Calot.TestUtilities
-    IsBeta: false
-    Frameworks:
-      - net472
-      - net48
-      - net6
-      - net7.0
-      - net8.0
+Configuration: Release
+NugetPackages:
+  - 
+    Name: Thuria.Calot.TestUtilities
+    Version: 1.11.0
